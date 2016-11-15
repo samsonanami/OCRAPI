@@ -1,0 +1,18 @@
+rootProject.name = 'Oracle'
+
+include 'DataTransferObjects'
+
+include 'OracleDataAbstraction'
+
+include 'JobMessagingChannelHandler'
+
+include 'OracleAPI'
+
+include 'ApolloAgent'
+
+include 'Services'
+
+include 'Services:Core'
+include 'Services:API'
+include 'Services:Apollo'
+
