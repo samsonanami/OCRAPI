@@ -11,7 +11,9 @@ apply plugin: "idea"
 
 
 subprojects {
+
     apply plugin: 'java'
+    apply plugin: 'net.vivin.gradle-semantic-build-versioning'
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
