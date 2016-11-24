@@ -1,0 +1,31 @@
+plugins {
+    id "com.gradle.build-scan" version "1.2"
+    id "net.vivin.gradle-semantic-build-versioning" version "2.0.2"
+}
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+group = "com.fintech.oracle"
+apply plugin: "idea"
+
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'net.vivin.gradle-semantic-build-versioning'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+
+    repositories {
+        mavenCentral()
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "http://repository.jboss.com" }
+        maven { url "http://download.java.net/maven/2/" }
+        maven { url "http://repository.springsource.com/maven/bundles/external" }
+        maven { url "http://forplay.googlecode.com/svn/mavenrepo" }
+        mavenLocal()
+    }
+
+}

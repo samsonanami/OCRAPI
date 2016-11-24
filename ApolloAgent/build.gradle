@@ -1,0 +1,8 @@
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile project(':OracleDataAbstraction')
+    compile project(':DataTransferObjects')
+    compile project(':Services:Apollo')
+    compile project(':JobMessagingChannelHandler')
+}
