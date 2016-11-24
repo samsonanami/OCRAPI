@@ -74,7 +74,7 @@ Oracle
     +--- JobMessagingChannelHandler
     +--- OracleAPI
     +--- OracleDataAbstraction
-    \---Services
+    \--- Services
         +--- API
         +--- Apollo
         +--- Core
@@ -82,4 +82,32 @@ Oracle
 
 ##### Oracle
 This is the root project. All sub modules will be included in to this root project
+
+##### ApolloAgent
+**ApolloAgent** is the image processing agent, which listen to the message queue for new processing requests
+once a processing request is received it will process the images using the native libraries.
+This agent will be deployed as a windows service with the help of apache commons demon.
+
+All the implementation related to management of the agent must go under this module. However business
+logic related to the agent should not be implemented under this sub module rather it should go under
+the **service** sub module.
+
+##### DataTransferObjects
+This sub module holds the implementation of the POJO classes used in transferring details from one
+module to another module or sending data to the outside entities using web API.
+
+##### JobMessagingChanelHandler
+All the implementation related to connecting to the message queue and submitting and receiving new
+messages should go under this module. This module will be injected to all the consumers and
+producers as a dependency. Relevant methods will be available for producers and consumers to
+add a new message to the queue or listen to new messages.
+
+#### OracleAPI
+This is the **REST API** which will be exposed to the external parties to interact with the service.
+Once a request is received to the api it should delegate the request to the corresponding service
+class to handle the request appropriately. Do not add any business logic to the controller implementation,
+rather move them to the service layer properly.
+
+#### Services
+All the implementation regarding the
 
