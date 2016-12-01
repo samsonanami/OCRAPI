@@ -1,4 +1,4 @@
-package com.fintech.oracle.oracle.common;
+package com.fintech.oracle.oracle.rest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
