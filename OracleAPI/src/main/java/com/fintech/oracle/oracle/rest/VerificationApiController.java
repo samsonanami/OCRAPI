@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.inject.Inject;
+import javax.jms.JMSException;
 import java.util.Objects;
 
 
