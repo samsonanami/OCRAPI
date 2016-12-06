@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Nov 24, 2016 4:01:54 PM by Hibernate Tools 4.3.1
+// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -29,11 +29,9 @@ public class Client  implements java.io.Serializable {
 
      private Integer id;
      private String email;
-     private String authToken;
      private Date registeredOn;
      private String userName;
      private String password;
-     private String refreshToken;
      private boolean enabled;
      private Set<License> licenses = new HashSet<License>(0);
      private Set<ProcessingRequest> processingRequests = new HashSet<ProcessingRequest>(0);
@@ -43,22 +41,18 @@ public class Client  implements java.io.Serializable {
     }
 
 	
-    public Client(String email, String authToken, Date registeredOn, String userName, String password, String refreshToken, boolean enabled) {
+    public Client(String email, Date registeredOn, String userName, String password, boolean enabled) {
         this.email = email;
-        this.authToken = authToken;
         this.registeredOn = registeredOn;
         this.userName = userName;
         this.password = password;
-        this.refreshToken = refreshToken;
         this.enabled = enabled;
     }
-    public Client(String email, String authToken, Date registeredOn, String userName, String password, String refreshToken, boolean enabled, Set<License> licenses, Set<ProcessingRequest> processingRequests, Set<Resource> resources) {
+    public Client(String email, Date registeredOn, String userName, String password, boolean enabled, Set<License> licenses, Set<ProcessingRequest> processingRequests, Set<Resource> resources) {
        this.email = email;
-       this.authToken = authToken;
        this.registeredOn = registeredOn;
        this.userName = userName;
        this.password = password;
-       this.refreshToken = refreshToken;
        this.enabled = enabled;
        this.licenses = licenses;
        this.processingRequests = processingRequests;
@@ -85,16 +79,6 @@ public class Client  implements java.io.Serializable {
     
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    
-    @Column(name="AUTH_TOKEN", nullable=false, length=50)
-    public String getAuthToken() {
-        return this.authToken;
-    }
-    
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
     }
 
     @Temporal(TemporalType.DATE)
@@ -125,16 +109,6 @@ public class Client  implements java.io.Serializable {
     
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    
-    @Column(name="REFRESH_TOKEN", nullable=false, length=50)
-    public String getRefreshToken() {
-        return this.refreshToken;
-    }
-    
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     

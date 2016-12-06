@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Nov 24, 2016 4:01:54 PM by Hibernate Tools 4.3.1
+// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -26,12 +26,12 @@ public class Resource  implements java.io.Serializable {
 
      private Integer id;
      private Client client;
+     private OcrProcess ocrProcess;
      private Process process;
      private ResourceType resourceType;
      private String location;
      private String resourceName;
      private String resourceIdentificationCode;
-     private Set<OcrProcess> ocrProcesses = new HashSet<OcrProcess>(0);
      private Set<ResourceMetadata> resourceMetadatas = new HashSet<ResourceMetadata>(0);
 
     public Resource() {
@@ -44,14 +44,14 @@ public class Resource  implements java.io.Serializable {
         this.location = location;
         this.resourceIdentificationCode = resourceIdentificationCode;
     }
-    public Resource(Client client, Process process, ResourceType resourceType, String location, String resourceName, String resourceIdentificationCode, Set<OcrProcess> ocrProcesses, Set<ResourceMetadata> resourceMetadatas) {
+    public Resource(Client client, OcrProcess ocrProcess, Process process, ResourceType resourceType, String location, String resourceName, String resourceIdentificationCode, Set<ResourceMetadata> resourceMetadatas) {
        this.client = client;
+       this.ocrProcess = ocrProcess;
        this.process = process;
        this.resourceType = resourceType;
        this.location = location;
        this.resourceName = resourceName;
        this.resourceIdentificationCode = resourceIdentificationCode;
-       this.ocrProcesses = ocrProcesses;
        this.resourceMetadatas = resourceMetadatas;
     }
    
@@ -75,6 +75,16 @@ public class Resource  implements java.io.Serializable {
     
     public void setClient(Client client) {
         this.client = client;
+    }
+
+@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="OCR_PROCESS_ID")
+    public OcrProcess getOcrProcess() {
+        return this.ocrProcess;
+    }
+    
+    public void setOcrProcess(OcrProcess ocrProcess) {
+        this.ocrProcess = ocrProcess;
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
@@ -125,15 +135,6 @@ public class Resource  implements java.io.Serializable {
     
     public void setResourceIdentificationCode(String resourceIdentificationCode) {
         this.resourceIdentificationCode = resourceIdentificationCode;
-    }
-
-@OneToMany(fetch=FetchType.LAZY, mappedBy="resource")
-    public Set<OcrProcess> getOcrProcesses() {
-        return this.ocrProcesses;
-    }
-    
-    public void setOcrProcesses(Set<OcrProcess> ocrProcesses) {
-        this.ocrProcesses = ocrProcesses;
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="resource")

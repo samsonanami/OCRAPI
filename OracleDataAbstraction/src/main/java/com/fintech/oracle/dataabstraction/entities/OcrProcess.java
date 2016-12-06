@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Nov 24, 2016 4:01:54 PM by Hibernate Tools 4.3.1
+// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -28,25 +28,24 @@ public class OcrProcess  implements java.io.Serializable {
      private OcrProcessingRequest ocrProcessingRequest;
      private OcrProcessingStatus ocrProcessingStatus;
      private OcrProcessType ocrProcessType;
-     private Resource resource;
      private Set<OcrResults> ocrResultses = new HashSet<OcrResults>(0);
+     private Set<Resource> resources = new HashSet<Resource>(0);
 
     public OcrProcess() {
     }
 
 	
-    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Resource resource) {
+    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType) {
         this.ocrProcessingRequest = ocrProcessingRequest;
         this.ocrProcessingStatus = ocrProcessingStatus;
         this.ocrProcessType = ocrProcessType;
-        this.resource = resource;
     }
-    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Resource resource, Set<OcrResults> ocrResultses) {
+    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Set<OcrResults> ocrResultses, Set<Resource> resources) {
        this.ocrProcessingRequest = ocrProcessingRequest;
        this.ocrProcessingStatus = ocrProcessingStatus;
        this.ocrProcessType = ocrProcessType;
-       this.resource = resource;
        this.ocrResultses = ocrResultses;
+       this.resources = resources;
     }
    
      @Id @GeneratedValue(strategy=IDENTITY)
@@ -91,16 +90,6 @@ public class OcrProcess  implements java.io.Serializable {
         this.ocrProcessType = ocrProcessType;
     }
 
-@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="RESOURCE", nullable=false)
-    public Resource getResource() {
-        return this.resource;
-    }
-    
-    public void setResource(Resource resource) {
-        this.resource = resource;
-    }
-
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcess")
     public Set<OcrResults> getOcrResultses() {
         return this.ocrResultses;
@@ -108,6 +97,15 @@ public class OcrProcess  implements java.io.Serializable {
     
     public void setOcrResultses(Set<OcrResults> ocrResultses) {
         this.ocrResultses = ocrResultses;
+    }
+
+@OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcess")
+    public Set<Resource> getResources() {
+        return this.resources;
+    }
+    
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
     }
 
 
