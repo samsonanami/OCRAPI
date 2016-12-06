@@ -94,13 +94,13 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         ocrProcess.setOcrProcessType(getOcrProcessType(verificationProcess.getVerificationProcessType()));
         ocrProcessRepository.save(ocrProcess);
         updateResources(verificationProcess, ocrProcess);
-        sendJob("123456");
+        sendJob(ocrProcess.getId());
     }
 
     @Transactional
-    private void sendJob(String processId){
+    private void sendJob(Integer processId){
         ProcessingJobMessage jobMessage = new ProcessingJobMessage();
-        jobMessage.setProcessId(processId);
+        jobMessage.setOcrProcessId(processId);
         messageProducer.sendMessage(jobMessage, jmsTemplate);
     }
 

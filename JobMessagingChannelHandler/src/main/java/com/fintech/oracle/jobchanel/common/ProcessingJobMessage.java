@@ -8,13 +8,13 @@ import java.io.Serializable;
  */
 public class ProcessingJobMessage implements Serializable{
 
-    private String processId;
+   private Integer ocrProcessId;
 
-    public String getProcessId() {
-        return processId;
+    public Integer getOcrProcessId() {
+        return ocrProcessId;
     }
 
-    public void setProcessId(String processId) {
-        this.processId = processId;
+    public void setOcrProcessId(Integer ocrProcessId) {
+        this.ocrProcessId = ocrProcessId;
     }
 }
