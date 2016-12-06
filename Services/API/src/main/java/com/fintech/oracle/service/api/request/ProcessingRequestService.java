@@ -9,12 +9,16 @@ import com.fintech.oracle.dto.response.OcrFieldData;
 import com.fintech.oracle.dto.response.OcrFieldValue;
 import com.fintech.oracle.dto.response.OcrResponse;
 import com.fintech.oracle.dto.response.VerificationProcessResponse;
+import com.fintech.oracle.jobchanel.common.ProcessingJobMessage;
+import com.fintech.oracle.jobchanel.producer.MessageProducer;
 import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.jms.JMSException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +45,12 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
 
     @Autowired
     private ResourceRepository resourceRepository;
+
+    @Autowired
+    private MessageProducer messageProducer;
+
+    @Autowired
+    private JmsTemplate jmsTemplate;
 
     @Override
     @Transactional
@@ -84,6 +94,14 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         ocrProcess.setOcrProcessType(getOcrProcessType(verificationProcess.getVerificationProcessType()));
         ocrProcessRepository.save(ocrProcess);
         updateResources(verificationProcess, ocrProcess);
+        sendJob(ocrProcess.getId());
+    }
+
+    @Transactional
+    private void sendJob(Integer processId){
+        ProcessingJobMessage jobMessage = new ProcessingJobMessage();
+        jobMessage.setOcrProcessId(processId);
+        messageProducer.sendMessage(jobMessage, jmsTemplate);
     }
 
     @Transactional

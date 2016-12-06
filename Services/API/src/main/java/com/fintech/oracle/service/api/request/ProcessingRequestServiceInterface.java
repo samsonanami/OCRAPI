@@ -7,6 +7,8 @@ import com.fintech.oracle.dto.response.VerificationProcessResponse;
 import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
 
+import javax.jms.JMSException;
+
 /**
  * Created by sasitha on 12/4/16.
  *
