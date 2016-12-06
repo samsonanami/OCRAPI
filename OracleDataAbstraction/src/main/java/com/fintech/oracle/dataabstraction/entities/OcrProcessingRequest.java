@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Nov 24, 2016 4:01:54 PM by Hibernate Tools 4.3.1
+// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,7 +25,7 @@ import javax.persistence.TemporalType;
 public class OcrProcessingRequest  implements java.io.Serializable {
 
 
-     private int id;
+     private Integer id;
      private Date receivedOn;
      private String processingRequestCode;
      private Set<OcrProcess> ocrProcesses = new HashSet<OcrProcess>(0);
@@ -31,26 +33,21 @@ public class OcrProcessingRequest  implements java.io.Serializable {
     public OcrProcessingRequest() {
     }
 
-	
-    public OcrProcessingRequest(int id) {
-        this.id = id;
-    }
-    public OcrProcessingRequest(int id, Date receivedOn, String processingRequestCode, Set<OcrProcess> ocrProcesses) {
-       this.id = id;
+    public OcrProcessingRequest(Date receivedOn, String processingRequestCode, Set<OcrProcess> ocrProcesses) {
        this.receivedOn = receivedOn;
        this.processingRequestCode = processingRequestCode;
        this.ocrProcesses = ocrProcesses;
     }
    
-     @Id 
+     @Id @GeneratedValue(strategy=IDENTITY)
 
     
     @Column(name="ID", unique=true, nullable=false)
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
     
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

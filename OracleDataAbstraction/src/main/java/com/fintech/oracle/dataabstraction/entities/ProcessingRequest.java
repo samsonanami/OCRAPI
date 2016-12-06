@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Nov 24, 2016 4:01:54 PM by Hibernate Tools 4.3.1
+// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;

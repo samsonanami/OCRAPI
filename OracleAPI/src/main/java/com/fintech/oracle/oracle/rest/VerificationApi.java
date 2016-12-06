@@ -3,6 +3,7 @@ package com.fintech.oracle.oracle.rest;
 import com.fintech.oracle.dto.request.VerificationRequest;
 import com.fintech.oracle.dto.response.OcrResponse;
 import com.fintech.oracle.dto.response.Response;
+import com.fintech.oracle.dto.response.VerificationProcessResponse;
 import io.swagger.annotations.*;
 
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,5 @@ public interface VerificationApi {
     @RequestMapping(value = "/v1/verification/{verificationId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<OcrResponse> getByVerificationId(@ApiParam(value = "id of the verification request data need to be fetched.", required = true) @PathVariable("verificationId") String verificationId);
+    ResponseEntity<Object> getByVerificationId(@ApiParam(value = "id of the verification request data need to be fetched.", required = true) @PathVariable("verificationId") String verificationId);
 }
