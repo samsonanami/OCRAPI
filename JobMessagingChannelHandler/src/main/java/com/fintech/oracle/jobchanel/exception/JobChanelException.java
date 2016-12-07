@@ -6,7 +6,15 @@ package com.fintech.oracle.jobchanel.exception;
  */
 public class JobChanelException extends Exception{
 
-    JobChanelException(Exception e){
+    public JobChanelException(Exception e){
         super(e);
+    }
+
+    public JobChanelException(String message, Exception e){
+        super(message, e);
+    }
+
+    public JobChanelException(String message){
+        super(message);
     }
 }

@@ -1,8 +1,8 @@
 package com.fintech.oracle.jobchanel.producer;
 
-import com.fintech.oracle.jobchanel.common.ProcessingJobMessage;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
+
+import java.io.Serializable;
 
 /**
  * Created by sasitha on 12/6/16.
@@ -10,5 +10,5 @@ import org.springframework.jms.core.JmsTemplate;
  */
 public interface MessageProducerInterface {
 
-    void sendMessage(ProcessingJobMessage jobMessage, JmsTemplate jmsTemplate);
+    void sendMessage(Serializable jobMessage, JmsTemplate jmsTemplate);
 }

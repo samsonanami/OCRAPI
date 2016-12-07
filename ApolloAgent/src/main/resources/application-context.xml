@@ -1,0 +1,46 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan
+            base-package="com.fintech.oracle.apollo.*"/>
+    <context:annotation-config />
+
+
+    <bean id="application-file-name" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="application-context.xml"/>
+    </bean>
+
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="failover:(tcp://10.101.15.212:61616)?timeout=3000"/>
+        <property name="userName" value="admin"/>
+        <property name="password" value="admin"/>
+        <property name="trustedPackages">
+            <util:list value-type="java.lang.String">
+                <value>com.fintech.oracle</value>
+            </util:list>
+        </property>
+    </bean>
+
+
+    <bean id="jmsContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="ocr-process-queue" />
+        <property name="messageListener" ref="messageAdapter" />
+    </bean>
+
+    <bean id="messageListener" class="com.fintech.oracle.apollo.listner.MessageListener"/>
+    <bean id="messageConsumer" class="com.fintech.oracle.jobchanel.consumer.MessageConsumer">
+        <property name="delegate" ref="messageListener"/>
+    </bean>
+
+    <bean id="messageAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+        <property name="delegate" ref="messageConsumer" />
+        <property name="defaultListenerMethod" value="processMessage" />
+    </bean>
+
+</beans>
