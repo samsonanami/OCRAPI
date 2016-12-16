@@ -18,3 +18,32 @@ dependencies {
     compile project(':Services:Apollo')
     compile project(':JobMessagingChannelHandler')
 }
+
+task copyLibs(type: Copy) {
+    into "$buildDir/output/lib"
+    from configurations.runtime
+}
+
+task copyConfigs(type: Copy){
+    into "$buildDir/output/config"
+    from "src/main/resources"
+}
+
+/*
+jar {
+    manifest {
+        attributes(
+                "Class-Path": "./"
+        )
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            exclude '*.properties'
+            exclude '*.xml'
+       }
+    }
+}
+*/

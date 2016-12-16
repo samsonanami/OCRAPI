@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
+// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class OcrProcess  implements java.io.Serializable {
      private OcrProcessingRequest ocrProcessingRequest;
      private OcrProcessingStatus ocrProcessingStatus;
      private OcrProcessType ocrProcessType;
-     private Set<OcrResults> ocrResultses = new HashSet<OcrResults>(0);
+     private Set<OcrResult> ocrResults = new HashSet<OcrResult>(0);
      private Set<Resource> resources = new HashSet<Resource>(0);
 
     public OcrProcess() {
@@ -40,11 +40,11 @@ public class OcrProcess  implements java.io.Serializable {
         this.ocrProcessingStatus = ocrProcessingStatus;
         this.ocrProcessType = ocrProcessType;
     }
-    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Set<OcrResults> ocrResultses, Set<Resource> resources) {
+    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Set<OcrResult> ocrResults, Set<Resource> resources) {
        this.ocrProcessingRequest = ocrProcessingRequest;
        this.ocrProcessingStatus = ocrProcessingStatus;
        this.ocrProcessType = ocrProcessType;
-       this.ocrResultses = ocrResultses;
+       this.ocrResults = ocrResults;
        this.resources = resources;
     }
    
@@ -91,12 +91,12 @@ public class OcrProcess  implements java.io.Serializable {
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcess")
-    public Set<OcrResults> getOcrResultses() {
-        return this.ocrResultses;
+    public Set<OcrResult> getOcrResults() {
+        return this.ocrResults;
     }
     
-    public void setOcrResultses(Set<OcrResults> ocrResultses) {
-        this.ocrResultses = ocrResultses;
+    public void setOcrResults(Set<OcrResult> ocrResults) {
+        this.ocrResults = ocrResults;
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcess")

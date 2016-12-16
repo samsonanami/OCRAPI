@@ -1,14 +1,24 @@
 package com.fintech.oracle.dto.messaging;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by sasitha messaging on 12/6/16.
  *
  */
 public class ProcessingJobMessage implements Serializable{
-    private static long serialVersionUID = 1113799434508676095L;
+    private static long serialVersionUID = 2L;
     private String ocrProcessId;
+    private ArrayList<JobResource> resources;
+
+    public ArrayList<JobResource> getResources() {
+        return resources;
+    }
+
+    public void setResources(ArrayList<JobResource> resources) {
+        this.resources = resources;
+    }
 
     public String getOcrProcessId() {
         return ocrProcessId;

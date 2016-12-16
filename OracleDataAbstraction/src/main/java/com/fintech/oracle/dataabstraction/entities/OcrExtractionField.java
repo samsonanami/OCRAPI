@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 5, 2016 6:07:33 PM by Hibernate Tools 4.3.1
+// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class OcrExtractionField  implements java.io.Serializable {
 
      private int id;
      private String field;
-     private Set<OcrResults> ocrResultses = new HashSet<OcrResults>(0);
+     private Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields = new HashSet<ResourceNameOcrExtractionField>(0);
 
     public OcrExtractionField() {
     }
@@ -31,10 +31,10 @@ public class OcrExtractionField  implements java.io.Serializable {
     public OcrExtractionField(int id) {
         this.id = id;
     }
-    public OcrExtractionField(int id, String field, Set<OcrResults> ocrResultses) {
+    public OcrExtractionField(int id, String field, Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields) {
        this.id = id;
        this.field = field;
-       this.ocrResultses = ocrResultses;
+       this.resourceNameOcrExtractionFields = resourceNameOcrExtractionFields;
     }
    
      @Id 
@@ -60,12 +60,12 @@ public class OcrExtractionField  implements java.io.Serializable {
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrExtractionField")
-    public Set<OcrResults> getOcrResultses() {
-        return this.ocrResultses;
+    public Set<ResourceNameOcrExtractionField> getResourceNameOcrExtractionFields() {
+        return this.resourceNameOcrExtractionFields;
     }
     
-    public void setOcrResultses(Set<OcrResults> ocrResultses) {
-        this.ocrResultses = ocrResultses;
+    public void setResourceNameOcrExtractionFields(Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields) {
+        this.resourceNameOcrExtractionFields = resourceNameOcrExtractionFields;
     }
 
 

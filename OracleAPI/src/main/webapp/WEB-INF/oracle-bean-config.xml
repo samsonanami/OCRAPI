@@ -35,15 +35,15 @@
         <property name="brokerURL" value="#{systemProperties['MESSAGE_BROKER_URL']}"/>
         <property name="userName" value="#{systemProperties['MESSAGING_USERNAME']}"/>
         <property name="password" value="#{systemProperties['MESSAGING_PASSWORD']}"/>
-        <property name="trustedPackages">
-            <util:list value-type="java.lang.String">
-                <value>com.fintech.oracle</value>
-            </util:list>
-        </property>
+        <property name="trustAllPackages" value="true"/>
     </bean>
 
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="defaultDestinationName" value="#{systemProperties['MESSAGING_QUEUE_NAME']}"/>
+    </bean>
+
+    <bean id="resourceFileBasePath" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="#{systemProperties['FILE_SAVING_LOCATION']}"/>
     </bean>
 </beans>
