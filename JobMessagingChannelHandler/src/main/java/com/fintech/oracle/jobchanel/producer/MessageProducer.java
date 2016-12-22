@@ -1,6 +1,6 @@
 package com.fintech.oracle.jobchanel.producer;
 
-import com.fintech.oracle.jobchanel.common.ProcessingJobMessage;
+
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
@@ -9,6 +9,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+import java.io.Serializable;
 
 /**
  * Created by sasitha on 12/6/16.
@@ -18,7 +19,7 @@ import javax.jms.Session;
 public class MessageProducer implements MessageProducerInterface{
 
     @Override
-    public void sendMessage(final ProcessingJobMessage jobMessage, final JmsTemplate jmsTemplate) {
+    public void sendMessage(final Serializable jobMessage, final JmsTemplate jmsTemplate) {
         jmsTemplate.send(new MessageCreator() {
             @Override
             public Message createMessage(Session session) throws JMSException {
