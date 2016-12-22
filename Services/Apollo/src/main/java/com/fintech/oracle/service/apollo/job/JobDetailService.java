@@ -1,9 +1,9 @@
 package com.fintech.oracle.service.apollo.job;
 
-import com.fintech.oracle.dataabstraction.entities.OcrProcess;
-import com.fintech.oracle.dataabstraction.entities.OcrResult;
-import com.fintech.oracle.dataabstraction.entities.Resource;
+import com.fintech.oracle.dataabstraction.entities.*;
+import com.fintech.oracle.dataabstraction.entities.Process;
 import com.fintech.oracle.dataabstraction.repository.OcrProcessRepository;
+import com.fintech.oracle.dataabstraction.repository.OcrProcessingStatusRepository;
 import com.fintech.oracle.dataabstraction.repository.OcrResultRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceRepository;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
@@ -26,6 +26,9 @@ public class JobDetailService implements JobDetailServiceInterface{
 
     @Autowired
     private OcrResultRepository ocrResultRepository;
+
+    @Autowired
+    private OcrProcessingStatusRepository ocrProcessingStatusRepository;
 
     @Override
     @Transactional
@@ -51,5 +54,13 @@ public class JobDetailService implements JobDetailServiceInterface{
     @Transactional
     public void saveOcrResults(OcrResult results) {
         ocrResultRepository.save(results);
+    }
+
+    @Override
+    @Transactional
+    public void updateOcrProcessStatus(OcrProcess process, String status) {
+        OcrProcessingStatus processingStatus = ocrProcessingStatusRepository.findOcrProcessingStatusByStatus(status).get(0);
+        process.setOcrProcessingStatus(processingStatus);
+        ocrProcessRepository.save(process);
     }
 }

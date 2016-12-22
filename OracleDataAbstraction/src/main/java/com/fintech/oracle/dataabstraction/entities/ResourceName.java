@@ -1,14 +1,10 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 22, 2016 11:53:40 AM by Hibernate Tools 4.3.1
 
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -22,8 +18,7 @@ public class ResourceName  implements java.io.Serializable {
 
      private int id;
      private String name;
-     private Set<Resource> resources = new HashSet<Resource>(0);
-     private Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields = new HashSet<ResourceNameOcrExtractionField>(0);
+     private String configFilePath;
 
     public ResourceName() {
     }
@@ -32,11 +27,10 @@ public class ResourceName  implements java.io.Serializable {
     public ResourceName(int id) {
         this.id = id;
     }
-    public ResourceName(int id, String name, Set<Resource> resources, Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields) {
+    public ResourceName(int id, String name, String configFilePath) {
        this.id = id;
        this.name = name;
-       this.resources = resources;
-       this.resourceNameOcrExtractionFields = resourceNameOcrExtractionFields;
+       this.configFilePath = configFilePath;
     }
    
      @Id 
@@ -61,29 +55,19 @@ public class ResourceName  implements java.io.Serializable {
         this.name = name;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="resourceName")
-    public Set<Resource> getResources() {
-        return this.resources;
+    
+    @Column(name="CONFIG_FILE_PATH", length=50)
+    public String getConfigFilePath() {
+        return this.configFilePath;
     }
     
-    public void setResources(Set<Resource> resources) {
-        this.resources = resources;
-    }
-
-@OneToMany(fetch=FetchType.LAZY, mappedBy="resourceName")
-    public Set<ResourceNameOcrExtractionField> getResourceNameOcrExtractionFields() {
-        return this.resourceNameOcrExtractionFields;
-    }
-    
-    public void setResourceNameOcrExtractionFields(Set<ResourceNameOcrExtractionField> resourceNameOcrExtractionFields) {
-        this.resourceNameOcrExtractionFields = resourceNameOcrExtractionFields;
+    public void setConfigFilePath(String configFilePath) {
+        this.configFilePath = configFilePath;
     }
 
 
-    @Override
-    public String toString() {
-        return "Resource [ resourceId = "+ id + ", resourceName " + name +"]";
-    }
+
+
 }
 
 

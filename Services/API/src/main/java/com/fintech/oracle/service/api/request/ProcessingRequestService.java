@@ -22,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by sasitha on 12/4/16.
@@ -196,15 +193,16 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         return ocrResponse;
     }
 
+
     private String getGeneralProcessingStatus(OcrProcessingRequest processingRequest){
-        String status = "Success";
-        for (OcrProcess process : processingRequest.getOcrProcesses()){
-            String processStatus = process.getOcrProcessingStatus().getStatus();
-            if(processStatus.isEmpty() || !processStatus.equalsIgnoreCase("Complete")){
-                status = "Failed";
+        List<OcrProcess> processList = new ArrayList<>(processingRequest.getOcrProcesses());
+        Collections.sort(processList, new Comparator<OcrProcess>() {
+            @Override
+            public int compare(OcrProcess o1, OcrProcess o2) {
+                return o1.getOcrProcessingStatus().getId() - o2.getOcrProcessingStatus().getId();
             }
-        }
-        return status;
+        });
+        return processList.get(0).getOcrProcessingStatus().getStatus();
     }
 
     @Transactional
