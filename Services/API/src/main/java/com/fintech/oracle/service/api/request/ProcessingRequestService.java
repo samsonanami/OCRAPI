@@ -14,6 +14,8 @@ import com.fintech.oracle.dto.messaging.ProcessingJobMessage;
 import com.fintech.oracle.jobchanel.producer.MessageProducer;
 import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.*;
  */
 @Service
 public class ProcessingRequestService implements ProcessingRequestServiceInterface{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessingRequestService.class);
 
     @Autowired
     private OcrProcesingRequestRepositoryInterface ocrProcessingRequestRepository;
@@ -102,34 +106,32 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         ocrProcess.setOcrProcessType(getOcrProcessType(verificationProcess.getVerificationProcessType()));
         ocrProcessRepository.save(ocrProcess);
         updateResources(verificationProcess, ocrProcess);
-        sendJob(ocrProcess.getId(), verificationProcess);
-    }
-
-
-    @Transactional
-    private void sendJob(Integer processId, VerificationProcess verificationProcess){
-        ProcessingJobMessage jobMessage = new ProcessingJobMessage();
-        jobMessage.setOcrProcessId(String.valueOf(processId));
-        try {
-            jobMessage.setResources(getResources( verificationProcess));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        messageProducer.sendMessage(jobMessage, jmsTemplate);
-    }
-
-    @Transactional
-    private ArrayList<JobResource> getResources(VerificationProcess verificationProcess) throws IOException {
-        ArrayList<JobResource> resourceList = new ArrayList<>();
         for (Resource resource : verificationProcess.getResources()){
-            com.fintech.oracle.dataabstraction.entities.Resource resourceEntity = resourceRepository.findResourcesByResourceIdentificationCode(resource.getResourceId()).get(0);
-            JobResource jobResource = new JobResource();
-            jobResource.setResourceId(resource.getResourceId());
-            jobResource.setResourceName(resource.getResourceName());
-            jobResource.setData(getRawBytesFromFile(resourceFileBasePath + resourceEntity.getLocation()));
-            resourceList.add(jobResource);
+            sendJob(ocrProcess, resource);
         }
-        return resourceList;
+
+    }
+
+
+    @Transactional
+    private void sendJob(OcrProcess process, Resource resource){
+        ProcessingJobMessage jobMessage = new ProcessingJobMessage();
+        jobMessage.setOcrProcessId(String.valueOf(process.getId()));
+        jobMessage.setResourceName(resource.getResourceName());
+        jobMessage.setResourceId(resource.getResourceId());
+        try {
+            jobMessage.setImageData(getImageData(resource.getResourceId()));
+            messageProducer.sendMessage(jobMessage, jmsTemplate);
+        } catch (IOException e) {
+            LOGGER.error("Could not read data for resource with resource identification id {} ", resource.getResourceId(), e);
+        }
+    }
+
+    @Transactional
+    private byte[] getImageData(String resourceIdentificationCode) throws IOException {
+        com.fintech.oracle.dataabstraction.entities.Resource resourceEntity =
+                resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode).get(0);
+        return getRawBytesFromFile(resourceFileBasePath + resourceEntity.getLocation());
     }
 
     @Transactional
@@ -177,6 +179,7 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
             com.fintech.oracle.dataabstraction.entities.Resource resource = resourceList.get(0);
             resource.setOcrProcess(ocrProcess);
             resource.setResourceName(resourceName);
+            resource.setOcrProcessingStatus(getProcessingStatus("pending"));
             resourceRepository.save(resource);
         }
     }
@@ -196,13 +199,17 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
 
     private String getGeneralProcessingStatus(OcrProcessingRequest processingRequest){
         List<OcrProcess> processList = new ArrayList<>(processingRequest.getOcrProcesses());
-        Collections.sort(processList, new Comparator<OcrProcess>() {
+        List<com.fintech.oracle.dataabstraction.entities.Resource> resourceList = new ArrayList<>();
+        for (OcrProcess ocrProcess : processList){
+            resourceList.addAll(ocrProcess.getResources());
+        }
+        Collections.sort(resourceList, new Comparator<com.fintech.oracle.dataabstraction.entities.Resource>() {
             @Override
-            public int compare(OcrProcess o1, OcrProcess o2) {
+            public int compare(com.fintech.oracle.dataabstraction.entities.Resource o1, com.fintech.oracle.dataabstraction.entities.Resource o2) {
                 return o1.getOcrProcessingStatus().getId() - o2.getOcrProcessingStatus().getId();
             }
         });
-        return processList.get(0).getOcrProcessingStatus().getStatus();
+        return resourceList.get(0).getOcrProcessingStatus().getStatus();
     }
 
     @Transactional

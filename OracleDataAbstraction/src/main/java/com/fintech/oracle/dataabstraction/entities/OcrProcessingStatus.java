@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,12 +16,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_processing_status"
+    ,catalog="idapi"
 )
 public class OcrProcessingStatus  implements java.io.Serializable {
 
 
      private int id;
      private String status;
+     private Set<Resource> resources = new HashSet<Resource>(0);
      private Set<OcrProcess> ocrProcesses = new HashSet<OcrProcess>(0);
 
     public OcrProcessingStatus() {
@@ -31,9 +33,10 @@ public class OcrProcessingStatus  implements java.io.Serializable {
     public OcrProcessingStatus(int id) {
         this.id = id;
     }
-    public OcrProcessingStatus(int id, String status, Set<OcrProcess> ocrProcesses) {
+    public OcrProcessingStatus(int id, String status, Set<Resource> resources, Set<OcrProcess> ocrProcesses) {
        this.id = id;
        this.status = status;
+       this.resources = resources;
        this.ocrProcesses = ocrProcesses;
     }
    
@@ -57,6 +60,15 @@ public class OcrProcessingStatus  implements java.io.Serializable {
     
     public void setStatus(String status) {
         this.status = status;
+    }
+
+@OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcessingStatus")
+    public Set<Resource> getResources() {
+        return this.resources;
+    }
+    
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcessingStatus")

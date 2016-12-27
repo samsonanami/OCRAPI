@@ -51,6 +51,16 @@ public class JobDetailService implements JobDetailServiceInterface{
     }
 
     @Override
+    public Resource getResourceDetails(String resourceIdentificationCode) throws DataNotFoundException {
+        Resource resource = resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode).get(0);
+        if (resource == null){
+            throw new DataNotFoundException("No resource found for the resource with resource identification code : " +
+                    resourceIdentificationCode);
+        }
+        return resource;
+    }
+
+    @Override
     @Transactional
     public void saveOcrResults(OcrResult results) {
         ocrResultRepository.save(results);
@@ -62,5 +72,13 @@ public class JobDetailService implements JobDetailServiceInterface{
         OcrProcessingStatus processingStatus = ocrProcessingStatusRepository.findOcrProcessingStatusByStatus(status).get(0);
         process.setOcrProcessingStatus(processingStatus);
         ocrProcessRepository.save(process);
+    }
+
+    @Override
+    @Transactional
+    public void updateOcrProcessStatus(Resource resource, String status) {
+        OcrProcessingStatus processingStatus = ocrProcessingStatusRepository.findOcrProcessingStatusByStatus(status).get(0);
+        resource.setOcrProcessingStatus(processingStatus);
+        resourceRepository.save(resource);
     }
 }

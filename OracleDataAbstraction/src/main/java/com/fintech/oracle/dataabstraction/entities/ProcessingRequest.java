@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="processing_request"
+    ,catalog="idapi"
 )
 public class ProcessingRequest  implements java.io.Serializable {
 
@@ -36,11 +37,6 @@ public class ProcessingRequest  implements java.io.Serializable {
     public ProcessingRequest() {
     }
 
-	
-    public ProcessingRequest(Client client, String processingRequestIdentificationCode) {
-        this.client = client;
-        this.processingRequestIdentificationCode = processingRequestIdentificationCode;
-    }
     public ProcessingRequest(Client client, Date receivedOn, String processingRequestIdentificationCode, Set<Process> processes) {
        this.client = client;
        this.receivedOn = receivedOn;
@@ -61,7 +57,7 @@ public class ProcessingRequest  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="CLIENT", nullable=false)
+    @JoinColumn(name="CLIENT")
     public Client getClient() {
         return this.client;
     }
@@ -81,7 +77,7 @@ public class ProcessingRequest  implements java.io.Serializable {
     }
 
     
-    @Column(name="PROCESSING_REQUEST_IDENTIFICATION_CODE", nullable=false, length=40)
+    @Column(name="PROCESSING_REQUEST_IDENTIFICATION_CODE", length=40)
     public String getProcessingRequestIdentificationCode() {
         return this.processingRequestIdentificationCode;
     }
@@ -98,6 +94,7 @@ public class ProcessingRequest  implements java.io.Serializable {
     public void setProcesses(Set<Process> processes) {
         this.processes = processes;
     }
+
 
 
 

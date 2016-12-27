@@ -10,14 +10,49 @@ import java.util.ArrayList;
 public class ProcessingJobMessage implements Serializable{
     private static long serialVersionUID = 2L;
     private String ocrProcessId;
-    private ArrayList<JobResource> resources;
+    private String ocrProcessingRequestId;
+    private String resourceId;
+    private String resourceName;
+    private byte[] imageData;
 
-    public ArrayList<JobResource> getResources() {
-        return resources;
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
-    public void setResources(ArrayList<JobResource> resources) {
-        this.resources = resources;
+    public static void setSerialVersionUID(long serialVersionUID) {
+        ProcessingJobMessage.serialVersionUID = serialVersionUID;
+    }
+
+    public String getOcrProcessingRequestId() {
+        return ocrProcessingRequestId;
+    }
+
+    public void setOcrProcessingRequestId(String ocrProcessingRequestId) {
+        this.ocrProcessingRequestId = ocrProcessingRequestId;
+    }
+
+    public String getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 
     public String getOcrProcessId() {
@@ -32,7 +67,7 @@ public class ProcessingJobMessage implements Serializable{
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((ocrProcessId == null) ? 0 : ocrProcessId.hashCode());
+        result = prime * result + ((resourceId == null) ? 0 : resourceId.hashCode());
         return result;
     }
     @Override
@@ -44,16 +79,21 @@ public class ProcessingJobMessage implements Serializable{
         if (getClass() != obj.getClass())
             return false;
         ProcessingJobMessage other = (ProcessingJobMessage) obj;
-        if (ocrProcessId == null) {
-            if (other.ocrProcessId != null)
+        if (resourceId == null) {
+            if (other.resourceId != null)
                 return false;
-        } else if (!ocrProcessId.equals(other.ocrProcessId))
+        } else if (!resourceId.equals(other.resourceId))
             return false;
         return true;
     }
     @Override
     public String toString() {
-        return "ProcessingJobMessage [ocrProcessId=" + ocrProcessId + "]";
+        return "ProcessingJobMessage [" +
+                " ocrProcessId = " + ocrProcessId +
+                " ocrProcessingRequestId = " + ocrProcessingRequestId +
+                " resourceId = " + resourceId +
+                " resourceName = " + resourceName
+                +"]";
     }
 
 }

@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -20,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_process"
+    ,catalog="idapi"
 )
 public class OcrProcess  implements java.io.Serializable {
 
@@ -34,12 +35,6 @@ public class OcrProcess  implements java.io.Serializable {
     public OcrProcess() {
     }
 
-	
-    public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType) {
-        this.ocrProcessingRequest = ocrProcessingRequest;
-        this.ocrProcessingStatus = ocrProcessingStatus;
-        this.ocrProcessType = ocrProcessType;
-    }
     public OcrProcess(OcrProcessingRequest ocrProcessingRequest, OcrProcessingStatus ocrProcessingStatus, OcrProcessType ocrProcessType, Set<OcrResult> ocrResults, Set<Resource> resources) {
        this.ocrProcessingRequest = ocrProcessingRequest;
        this.ocrProcessingStatus = ocrProcessingStatus;
@@ -61,7 +56,7 @@ public class OcrProcess  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESSING_REQUEST", nullable=false)
+    @JoinColumn(name="PROCESSING_REQUEST")
     public OcrProcessingRequest getOcrProcessingRequest() {
         return this.ocrProcessingRequest;
     }
@@ -71,7 +66,7 @@ public class OcrProcess  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESSING_STATUS", nullable=false)
+    @JoinColumn(name="PROCESSING_STATUS")
     public OcrProcessingStatus getOcrProcessingStatus() {
         return this.ocrProcessingStatus;
     }
@@ -81,7 +76,7 @@ public class OcrProcess  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESS_TYPE", nullable=false)
+    @JoinColumn(name="PROCESS_TYPE")
     public OcrProcessType getOcrProcessType() {
         return this.ocrProcessType;
     }
@@ -98,6 +93,7 @@ public class OcrProcess  implements java.io.Serializable {
     public void setOcrResults(Set<OcrResult> ocrResults) {
         this.ocrResults = ocrResults;
     }
+
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="ocrProcess")
     public Set<Resource> getResources() {

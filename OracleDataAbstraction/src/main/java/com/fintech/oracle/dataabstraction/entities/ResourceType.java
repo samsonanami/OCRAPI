@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,6 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="resource_type"
+    ,catalog="idapi"
 )
 public class ResourceType  implements java.io.Serializable {
 
@@ -67,8 +68,6 @@ public class ResourceType  implements java.io.Serializable {
     public void setResources(Set<Resource> resources) {
         this.resources = resources;
     }
-
-
 
 
 }
