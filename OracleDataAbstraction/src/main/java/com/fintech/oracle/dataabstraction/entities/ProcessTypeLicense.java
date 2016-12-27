@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import javax.persistence.Column;
@@ -17,6 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="process_type_license"
+    ,catalog="idapi"
 )
 public class ProcessTypeLicense  implements java.io.Serializable {
 

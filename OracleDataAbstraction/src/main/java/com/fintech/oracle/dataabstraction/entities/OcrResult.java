@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import javax.persistence.Column;
@@ -17,6 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_result"
+    ,catalog="idapi"
 )
 public class OcrResult  implements java.io.Serializable {
 
@@ -31,11 +32,6 @@ public class OcrResult  implements java.io.Serializable {
     public OcrResult() {
     }
 
-	
-    public OcrResult(OcrProcess ocrProcess, ResourceNameOcrExtractionField resourceNameOcrExtractionField) {
-        this.ocrProcess = ocrProcess;
-        this.resourceNameOcrExtractionField = resourceNameOcrExtractionField;
-    }
     public OcrResult(OcrProcess ocrProcess, ResourceNameOcrExtractionField resourceNameOcrExtractionField, String value, Double ocrConfidence, String resultName) {
        this.ocrProcess = ocrProcess;
        this.resourceNameOcrExtractionField = resourceNameOcrExtractionField;
@@ -57,7 +53,7 @@ public class OcrResult  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="OCR_PROCESS", nullable=false)
+    @JoinColumn(name="OCR_PROCESS")
     public OcrProcess getOcrProcess() {
         return this.ocrProcess;
     }
@@ -67,7 +63,7 @@ public class OcrResult  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="OCR_EXTRACTION_FIELD", nullable=false)
+    @JoinColumn(name="OCR_EXTRACTION_FIELD")
     public ResourceNameOcrExtractionField getResourceNameOcrExtractionField() {
         return this.resourceNameOcrExtractionField;
     }

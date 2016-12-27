@@ -16,7 +16,11 @@ public interface JobDetailServiceInterface {
 
     Resource getResourceDetails(Integer resourceId) throws DataNotFoundException;
 
+    Resource getResourceDetails(String resourceIdentificationCode) throws DataNotFoundException;
+
     void saveOcrResults(OcrResult results);
 
     void updateOcrProcessStatus(OcrProcess process, String status);
+
+    void updateOcrProcessStatus(Resource resource, String status);
 }

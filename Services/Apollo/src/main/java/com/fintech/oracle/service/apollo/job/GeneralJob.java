@@ -1,9 +1,6 @@
 package com.fintech.oracle.service.apollo.job;
 
-import com.fintech.oracle.dataabstraction.entities.OcrProcess;
-import com.fintech.oracle.dataabstraction.entities.OcrResult;
-import com.fintech.oracle.dataabstraction.entities.ResourceName;
-import com.fintech.oracle.dataabstraction.entities.ResourceNameOcrExtractionField;
+import com.fintech.oracle.dataabstraction.entities.*;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameOcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameRepository;
 import com.fintech.oracle.dto.jni.ZvImage;
@@ -53,53 +50,51 @@ public class GeneralJob {
         try {
             ProcessingJobMessage jobMessage = (ProcessingJobMessage)message;
             OcrProcess process = jobDetailService.getOcrProcessDetails(jobMessage.getOcrProcessId());
-            for (JobResource resource : jobMessage.getResources()){
+            Resource resource = jobDetailService.getResourceDetails(jobMessage.getResourceId());
+            try{
 
-                try {
-                    LOGGER.debug("start processing resource with Id {}, name {} " ,
-                            resource.getResourceId(), resource.getResourceName());
-                    ResourceName resourceName =
-                            resourceNameRepository.findResourceNameByName(resource.getResourceName());
-                    String resourceConfigurationName = resourceName.getConfigFilePath();
-                    if(resourceConfigurationName.isEmpty()){
-                        LOGGER.error("Invalid resource name '" + resource.getResourceName() +
-                                "' given for the idVerification. This resource will be skipped from getting processed");
-                    }else if (resourceConfigurationName.equals("KeyedData")){
-                        String json =  new String(resource.getData());
-                        JSONObject jsonObj = new JSONObject(json);
-                        saveJsonDetails(jsonObj,  process,
-                                resourceNameRepository.findResourceNameByName(resource.getResourceName()));
+                LOGGER.debug("Start processing resource with id {}, name {}",
+                        jobMessage.getResourceId(), jobMessage.getResourceName());
+                ResourceName resourceName =
+                        resourceNameRepository.findResourceNameByName(jobMessage.getResourceName());
+                String resourceConfigurationName = resourceName.getConfigFilePath();
+                if(resourceConfigurationName.isEmpty()){
+                    LOGGER.error("Invalid resource name '" + resource.getResourceName() +
+                            "' given for the idVerification. This resource will be skipped from getting processed");
+                }else if (resourceConfigurationName.equals("KeyedData")){
+                    String json =  new String(jobMessage.getImageData());
+                    JSONObject jsonObj = new JSONObject(json);
+                    saveJsonDetails(jsonObj,  process, resourceName);
+                }else {
+                    ZvImage resultImage = jniImageProcessor.processDocument(resourceConfigurationName,
+                            getSourceImage(jobMessage));
+                    LOGGER.debug("Received result set from jniImageProcessor " + resultImage.getOutput());
+                    LOGGER.debug("Received error set from jniImageProcessor " + resultImage.getError());
+                    if(resultImage.getError().isEmpty()){
+                        saveExtractedDetails(resultImage.getOutput(), process, resourceName);
+                        jobDetailService.updateOcrProcessStatus(process, "processing_successful");
+                        jobDetailService.updateOcrProcessStatus(resource, "processing_successful");
                     }else {
-                        ZvImage resultImage = jniImageProcessor.processDocument(resourceConfigurationName,
-                                getSourceImage(resource));
-                        LOGGER.debug("Received result set from jniImageProcessor " + resultImage.getOutput());
-                        LOGGER.debug("Received error set from jniImageProcessor " + resultImage.getError());
-                        if(resultImage.getError().isEmpty()){
-                            saveExtractedDetails(resultImage.getOutput(), process,
-                                    resourceNameRepository.findResourceNameByName(resource.getResourceName()));
-                            jobDetailService.updateOcrProcessStatus(process, "processing_successful");
-                        }else {
-                            String errorResults = "processing_failure##"+resultImage.getError();
-                            saveExtractedDetails(errorResults, process,
-                                    resourceNameRepository.findResourceNameByName(resource.getResourceName()));
-                            jobDetailService.updateOcrProcessStatus(process, "processing_failed");
-                        }
+                        saveExtractedDetails(resultImage.getError(), process, resourceName);
+                        jobDetailService.updateOcrProcessStatus(process, "processing_failed");
+                        jobDetailService.updateOcrProcessStatus(resource, "processing_failed");
                     }
-                }catch (ConfigurationDataNotFoundException e) {
-                    jobDetailService.updateOcrProcessStatus(process, "processing_failed");
-                    throw new JobException("Could not find required configuration data for resource with id : " +
-                            "" + resource.getResourceId() + " and resource name : " + resource.getResourceName(), e);
-                } catch (IOException e) {
-                    jobDetailService.updateOcrProcessStatus(process, "processing_failed");
-                    throw new JobException("Error occurred while processing resource id " +
-                            "" + resource.getResourceId() + " and resource name : " + resource.getResourceName(), e);
                 }
+            }catch (ConfigurationDataNotFoundException e){
+                jobDetailService.updateOcrProcessStatus(process, "processing_failed");
+                jobDetailService.updateOcrProcessStatus(resource, "processing_failed");
+                throw new JobException("Could not find required configuration data for resource with id : " +
+                        "" + jobMessage.getResourceId() + " and resource name : " + resource.getResourceName(), e);
+            } catch (IOException e) {
+                jobDetailService.updateOcrProcessStatus(process, "processing_failed");
+                jobDetailService.updateOcrProcessStatus(resource, "processing_failed");
+                throw new JobException("Error occurred while processing resource id " +
+                        "" + jobMessage.getResourceId() + " and resource name : " + resource.getResourceName(), e);
             }
         } catch (DataNotFoundException e) {
             throw new JobException(e.getMessage(), e);
         }
     }
-
 
     public  void saveJsonDetails(JSONObject json, OcrProcess ocrProcess, ResourceName resourceName)
             throws ConfigurationDataNotFoundException {
@@ -193,14 +188,14 @@ public class GeneralJob {
         }
         return result;
     }
-    public ZvImage getSourceImage(JobResource resource) throws IOException {
+    public ZvImage getSourceImage(ProcessingJobMessage resource) throws IOException {
         ZvImage zvImage = new ZvImage();
         zvImage.setError("");
         zvImage.setOutput("");
-        if (resource.getData() == null){
+        if (resource.getImageData() == null){
             throw new IOException("Resource byte array could not be null ");
         }
-        zvImage.setData(resource.getData());
+        zvImage.setData(resource.getImageData());
         return zvImage;
     }
 }

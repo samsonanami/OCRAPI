@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -24,6 +24,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="process"
+    ,catalog="idapi"
 )
 public class Process  implements java.io.Serializable {
 
@@ -41,13 +42,6 @@ public class Process  implements java.io.Serializable {
     public Process() {
     }
 
-	
-    public Process(ProcessingRequest processingRequest, ProcessingStatus processingStatus, ProcessType processType, String processIdentificationCode) {
-        this.processingRequest = processingRequest;
-        this.processingStatus = processingStatus;
-        this.processType = processType;
-        this.processIdentificationCode = processIdentificationCode;
-    }
     public Process(ProcessingRequest processingRequest, ProcessingStatus processingStatus, ProcessType processType, Date requestSentOn, Date responseReceivedOn, String processIdentificationCode, Response response, Set<Resource> resources) {
        this.processingRequest = processingRequest;
        this.processingStatus = processingStatus;
@@ -72,7 +66,7 @@ public class Process  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESSING_REQUEST", nullable=false)
+    @JoinColumn(name="PROCESSING_REQUEST")
     public ProcessingRequest getProcessingRequest() {
         return this.processingRequest;
     }
@@ -82,7 +76,7 @@ public class Process  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESSING_STATUS", nullable=false)
+    @JoinColumn(name="PROCESSING_STATUS")
     public ProcessingStatus getProcessingStatus() {
         return this.processingStatus;
     }
@@ -92,7 +86,7 @@ public class Process  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="PROCESS_TYPE", nullable=false)
+    @JoinColumn(name="PROCESS_TYPE")
     public ProcessType getProcessType() {
         return this.processType;
     }
@@ -122,7 +116,7 @@ public class Process  implements java.io.Serializable {
     }
 
     
-    @Column(name="PROCESS_IDENTIFICATION_CODE", nullable=false, length=40)
+    @Column(name="PROCESS_IDENTIFICATION_CODE", length=40)
     public String getProcessIdentificationCode() {
         return this.processIdentificationCode;
     }

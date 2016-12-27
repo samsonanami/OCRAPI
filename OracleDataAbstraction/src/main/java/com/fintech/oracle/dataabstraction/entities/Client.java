@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.Date;
@@ -22,6 +22,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name="client"
+    ,catalog="idapi"
     , uniqueConstraints = {@UniqueConstraint(columnNames="EMAIL"), @UniqueConstraint(columnNames="USER_NAME")} 
 )
 public class Client  implements java.io.Serializable {
@@ -33,9 +34,9 @@ public class Client  implements java.io.Serializable {
      private String userName;
      private String password;
      private boolean enabled;
+     private Set<Resource> resources = new HashSet<Resource>(0);
      private Set<License> licenses = new HashSet<License>(0);
      private Set<ProcessingRequest> processingRequests = new HashSet<ProcessingRequest>(0);
-     private Set<Resource> resources = new HashSet<Resource>(0);
 
     public Client() {
     }
@@ -48,15 +49,15 @@ public class Client  implements java.io.Serializable {
         this.password = password;
         this.enabled = enabled;
     }
-    public Client(String email, Date registeredOn, String userName, String password, boolean enabled, Set<License> licenses, Set<ProcessingRequest> processingRequests, Set<Resource> resources) {
+    public Client(String email, Date registeredOn, String userName, String password, boolean enabled, Set<Resource> resources, Set<License> licenses, Set<ProcessingRequest> processingRequests) {
        this.email = email;
        this.registeredOn = registeredOn;
        this.userName = userName;
        this.password = password;
        this.enabled = enabled;
+       this.resources = resources;
        this.licenses = licenses;
        this.processingRequests = processingRequests;
-       this.resources = resources;
     }
    
      @Id @GeneratedValue(strategy=IDENTITY)
@@ -122,6 +123,15 @@ public class Client  implements java.io.Serializable {
     }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="client")
+    public Set<Resource> getResources() {
+        return this.resources;
+    }
+    
+    public void setResources(Set<Resource> resources) {
+        this.resources = resources;
+    }
+
+@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
     public Set<License> getLicenses() {
         return this.licenses;
     }
@@ -129,6 +139,7 @@ public class Client  implements java.io.Serializable {
     public void setLicenses(Set<License> licenses) {
         this.licenses = licenses;
     }
+
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="client")
     public Set<ProcessingRequest> getProcessingRequests() {
@@ -139,14 +150,7 @@ public class Client  implements java.io.Serializable {
         this.processingRequests = processingRequests;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="client")
-    public Set<Resource> getResources() {
-        return this.resources;
-    }
-    
-    public void setResources(Set<Resource> resources) {
-        this.resources = resources;
-    }
+
 
 
 

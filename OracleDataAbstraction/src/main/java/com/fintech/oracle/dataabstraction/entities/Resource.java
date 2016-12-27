@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -20,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="resource"
+    ,catalog="idapi"
 )
 public class Resource  implements java.io.Serializable {
 
@@ -27,6 +28,7 @@ public class Resource  implements java.io.Serializable {
      private Integer id;
      private Client client;
      private OcrProcess ocrProcess;
+     private OcrProcessingStatus ocrProcessingStatus;
      private Process process;
      private ResourceName resourceName;
      private ResourceType resourceType;
@@ -37,13 +39,10 @@ public class Resource  implements java.io.Serializable {
     public Resource() {
     }
 
-	
-    public Resource(ResourceName resourceName) {
-        this.resourceName = resourceName;
-    }
-    public Resource(Client client, OcrProcess ocrProcess, Process process, ResourceName resourceName, ResourceType resourceType, String location, String resourceIdentificationCode, Set<ResourceMetadata> resourceMetadatas) {
+    public Resource(Client client, OcrProcess ocrProcess, OcrProcessingStatus ocrProcessingStatus, Process process, ResourceName resourceName, ResourceType resourceType, String location, String resourceIdentificationCode, Set<ResourceMetadata> resourceMetadatas) {
        this.client = client;
        this.ocrProcess = ocrProcess;
+       this.ocrProcessingStatus = ocrProcessingStatus;
        this.process = process;
        this.resourceName = resourceName;
        this.resourceType = resourceType;
@@ -85,6 +84,16 @@ public class Resource  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="OCR_PROCESSING_STATUS")
+    public OcrProcessingStatus getOcrProcessingStatus() {
+        return this.ocrProcessingStatus;
+    }
+    
+    public void setOcrProcessingStatus(OcrProcessingStatus ocrProcessingStatus) {
+        this.ocrProcessingStatus = ocrProcessingStatus;
+    }
+
+@ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="PROCESS")
     public Process getProcess() {
         return this.process;
@@ -95,7 +104,7 @@ public class Resource  implements java.io.Serializable {
     }
 
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="RESOURCE_NAME", nullable=false)
+    @JoinColumn(name="RESOURCE_NAME")
     public ResourceName getResourceName() {
         return this.resourceName;
     }
@@ -142,8 +151,6 @@ public class Resource  implements java.io.Serializable {
     public void setResourceMetadatas(Set<ResourceMetadata> resourceMetadatas) {
         this.resourceMetadatas = resourceMetadatas;
     }
-
-
 
 
 }

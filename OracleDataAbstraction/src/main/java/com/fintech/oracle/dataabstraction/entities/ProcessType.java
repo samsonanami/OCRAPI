@@ -1,5 +1,5 @@
 package com.fintech.oracle.dataabstraction.entities;
-// Generated Dec 8, 2016 4:58:28 PM by Hibernate Tools 4.3.1
+// Generated Dec 25, 2016 11:01:37 AM by Hibernate Tools 4.3.1
 
 
 import java.util.HashSet;
@@ -16,6 +16,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="process_type"
+    ,catalog="idapi"
 )
 public class ProcessType  implements java.io.Serializable {
 
@@ -23,8 +24,8 @@ public class ProcessType  implements java.io.Serializable {
      private int id;
      private String type;
      private Set<ProcessTypeLicense> processTypeLicenses = new HashSet<ProcessTypeLicense>(0);
-     private Set<Process> processes = new HashSet<Process>(0);
      private Set<ProcessConfig> processConfigs = new HashSet<ProcessConfig>(0);
+     private Set<Process> processes = new HashSet<Process>(0);
 
     public ProcessType() {
     }
@@ -33,12 +34,12 @@ public class ProcessType  implements java.io.Serializable {
     public ProcessType(int id) {
         this.id = id;
     }
-    public ProcessType(int id, String type, Set<ProcessTypeLicense> processTypeLicenses, Set<Process> processes, Set<ProcessConfig> processConfigs) {
+    public ProcessType(int id, String type, Set<ProcessTypeLicense> processTypeLicenses, Set<ProcessConfig> processConfigs, Set<Process> processes) {
        this.id = id;
        this.type = type;
        this.processTypeLicenses = processTypeLicenses;
-       this.processes = processes;
        this.processConfigs = processConfigs;
+       this.processes = processes;
     }
    
      @Id 
@@ -72,14 +73,6 @@ public class ProcessType  implements java.io.Serializable {
         this.processTypeLicenses = processTypeLicenses;
     }
 
-@OneToMany(fetch=FetchType.LAZY, mappedBy="processType")
-    public Set<Process> getProcesses() {
-        return this.processes;
-    }
-    
-    public void setProcesses(Set<Process> processes) {
-        this.processes = processes;
-    }
 
 @OneToMany(fetch=FetchType.LAZY, mappedBy="processType")
     public Set<ProcessConfig> getProcessConfigs() {
@@ -88,6 +81,15 @@ public class ProcessType  implements java.io.Serializable {
     
     public void setProcessConfigs(Set<ProcessConfig> processConfigs) {
         this.processConfigs = processConfigs;
+    }
+
+@OneToMany(fetch=FetchType.LAZY, mappedBy="processType")
+    public Set<Process> getProcesses() {
+        return this.processes;
+    }
+    
+    public void setProcesses(Set<Process> processes) {
+        this.processes = processes;
     }
 
 
