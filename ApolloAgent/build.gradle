@@ -45,3 +45,7 @@ sourceSets {
        }
     }
 }
+
+task buildApollo(dependsOn : ['copyLibs', 'copyConfigs'])
+copyLibs.mustRunAfter build
+copyConfigs.mustRunAfter copyLibs
