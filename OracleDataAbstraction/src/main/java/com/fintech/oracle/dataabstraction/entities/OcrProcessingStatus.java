@@ -16,7 +16,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_processing_status"
-    ,catalog="idapi"
 )
 public class OcrProcessingStatus  implements java.io.Serializable {
 

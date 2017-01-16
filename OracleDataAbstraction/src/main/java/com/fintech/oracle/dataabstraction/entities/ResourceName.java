@@ -16,7 +16,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="resource_name"
-    ,catalog="idapi"
 )
 public class ResourceName  implements java.io.Serializable {
 

@@ -17,7 +17,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_result"
-    ,catalog="idapi"
 )
 public class OcrResult  implements java.io.Serializable {
 
@@ -103,8 +102,17 @@ public class OcrResult  implements java.io.Serializable {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "OcrResult{" +
+                "id=" + id +
+                ", ocrProcess=" + ocrProcess +
+                ", resourceNameOcrExtractionField=" + resourceNameOcrExtractionField +
+                ", value='" + value + '\'' +
+                ", ocrConfidence=" + ocrConfidence +
+                ", resultName='" + resultName + '\'' +
+                '}';
+    }
 }
 
 

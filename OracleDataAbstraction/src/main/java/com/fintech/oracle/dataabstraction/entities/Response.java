@@ -18,7 +18,6 @@ import org.hibernate.annotations.Parameter;
  */
 @Entity
 @Table(name="response"
-    ,catalog="idapi"
 )
 public class Response  implements java.io.Serializable {
 

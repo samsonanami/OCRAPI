@@ -23,7 +23,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="license"
-    ,catalog="idapi"
 )
 public class License  implements java.io.Serializable {
 

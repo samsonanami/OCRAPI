@@ -16,7 +16,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="process_type"
-    ,catalog="idapi"
 )
 public class ProcessType  implements java.io.Serializable {
 

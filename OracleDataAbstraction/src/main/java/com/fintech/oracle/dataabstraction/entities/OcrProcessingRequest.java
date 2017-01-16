@@ -21,7 +21,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="ocr_processing_request"
-    ,catalog="idapi"
 )
 public class OcrProcessingRequest  implements java.io.Serializable {
 

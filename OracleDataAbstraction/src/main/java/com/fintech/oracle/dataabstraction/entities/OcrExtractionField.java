@@ -16,7 +16,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_extraction_field"
-    ,catalog="idapi"
 )
 public class OcrExtractionField  implements java.io.Serializable {
 

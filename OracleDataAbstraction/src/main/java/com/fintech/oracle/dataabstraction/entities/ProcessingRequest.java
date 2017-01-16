@@ -23,7 +23,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="processing_request"
-    ,catalog="idapi"
 )
 public class ProcessingRequest  implements java.io.Serializable {
 

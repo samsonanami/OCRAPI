@@ -33,4 +33,12 @@ public class ZvImage {
     public void setError(String error) {
         this.error = error;
     }
+
+    @Override
+    public String toString() {
+        return "ZvImage{" +
+                "output='" + output + '\'' +
+                ", error='" + error + '\'' +
+                '}';
+    }
 }

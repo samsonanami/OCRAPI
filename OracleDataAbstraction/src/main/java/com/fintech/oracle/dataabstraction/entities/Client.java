@@ -22,7 +22,6 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name="client"
-    ,catalog="idapi"
     , uniqueConstraints = {@UniqueConstraint(columnNames="EMAIL"), @UniqueConstraint(columnNames="USER_NAME")} 
 )
 public class Client  implements java.io.Serializable {

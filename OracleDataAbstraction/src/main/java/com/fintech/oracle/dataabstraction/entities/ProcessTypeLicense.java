@@ -17,7 +17,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="process_type_license"
-    ,catalog="idapi"
 )
 public class ProcessTypeLicense  implements java.io.Serializable {
 

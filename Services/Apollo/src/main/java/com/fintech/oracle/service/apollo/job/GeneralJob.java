@@ -64,10 +64,14 @@ public class GeneralJob {
                 }else if (resourceConfigurationName.equals("KeyedData")){
                     String json =  new String(jobMessage.getImageData());
                     JSONObject jsonObj = new JSONObject(json);
+                    LOGGER.debug("Saving details received from json file {}", jsonObj);
                     saveJsonDetails(jsonObj,  process, resourceName);
+                    jobDetailService.updateOcrProcessStatus(process, "processing_successful");
+                    jobDetailService.updateOcrProcessStatus(resource, "processing_successful");
                 }else {
                     ZvImage resultImage = jniImageProcessor.processDocument(resourceConfigurationName,
                             getSourceImage(jobMessage));
+                    LOGGER.debug("Received processed results from dll {}", resultImage);
                     LOGGER.debug("Received result set from jniImageProcessor " + resultImage.getOutput());
                     LOGGER.debug("Received error set from jniImageProcessor " + resultImage.getError());
                     if(resultImage.getError().isEmpty()){
@@ -119,6 +123,8 @@ public class GeneralJob {
             ocrResult.setResourceNameOcrExtractionField(extractionField);
             ocrResult.setValue(dataFromJson);
             ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
+
+            LOGGER.debug("saving results {}", ocrResult);
             jobDetailService.saveOcrResults(ocrResult);
         }
     }
@@ -145,6 +151,7 @@ public class GeneralJob {
             ocrResult.setValue(extractedValue);
             ocrResult.setOcrConfidence(Double.valueOf(ocrConfidenceValue));
             ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
+            LOGGER.debug("saving results {}", ocrResult);
             jobDetailService.saveOcrResults(ocrResult);
         }
     }
@@ -153,7 +160,7 @@ public class GeneralJob {
     public String getExtractedFieldValue(String fieldValueConfidenceString, String field){
         String pattern = "##(.*?)##";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(fieldValueConfidenceString);
+        Matcher m = r.matcher(fieldValueConfidenceString.trim());
         String result = "";
         if(m.find()){
             result = m.group(0);
@@ -166,7 +173,7 @@ public class GeneralJob {
     public String getExtractedFieldOcrConfidence(String fieldValueConfidenceString, String field){
         String pattern = "##([0-9]+\\.?[0-9]+)%%";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(fieldValueConfidenceString);
+        Matcher m = r.matcher(fieldValueConfidenceString.trim());
         String result = "";
         if(m.find()){
             result = m.group(0);
@@ -181,6 +188,7 @@ public class GeneralJob {
         String pattern = "(?i)%%("+ field.replace("_", " ") +")(.*?)%%";
 
         Pattern r = Pattern.compile(pattern);
+        resultString = resultString.trim();
         Matcher m = r.matcher("%%"+resultString);
         String result = "";
         if(m.find()){

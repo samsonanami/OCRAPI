@@ -24,7 +24,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="process"
-    ,catalog="idapi"
 )
 public class Process  implements java.io.Serializable {
 

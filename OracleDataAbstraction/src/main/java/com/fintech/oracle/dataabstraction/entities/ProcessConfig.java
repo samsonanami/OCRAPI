@@ -17,7 +17,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="process_config"
-    ,catalog="idapi"
 )
 public class ProcessConfig  implements java.io.Serializable {
 

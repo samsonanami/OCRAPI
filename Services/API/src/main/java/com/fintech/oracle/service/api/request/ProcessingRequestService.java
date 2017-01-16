@@ -65,6 +65,7 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
     @Autowired
     private String resourceFileBasePath;
 
+    @Transactional
     @Override
     public VerificationProcessResponse saveProcessingRequest(VerificationRequest verificationRequest) throws ConfigurationDataNotFoundException, DataNotFoundException {
         VerificationProcessResponse response = new VerificationProcessResponse();

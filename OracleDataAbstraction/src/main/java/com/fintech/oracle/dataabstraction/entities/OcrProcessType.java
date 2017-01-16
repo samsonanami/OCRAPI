@@ -16,7 +16,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="ocr_process_type"
-    ,catalog="idapi"
 )
 public class OcrProcessType  implements java.io.Serializable {
 
