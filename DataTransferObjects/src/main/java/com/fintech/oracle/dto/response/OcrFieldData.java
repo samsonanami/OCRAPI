@@ -17,7 +17,7 @@ public class OcrFieldData   {
   private String id = null;
 
   @JsonProperty("value")
-  private List<OcrFieldValue> value = new ArrayList<OcrFieldValue>();
+  private List<OcrFieldValue> value = new ArrayList<>();
 
   public OcrFieldData id(String id) {
     this.id = id;

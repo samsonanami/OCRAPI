@@ -5,8 +5,8 @@ package com.fintech.oracle.service.apollo.job;
  *
  */
 public enum  JobType {
-    idVerification ("idVerification"),
-    addressVerification ("addressVerification")
+    ID_VERIFICATION("ID_VERIFICATION"),
+    ADDRESS_VERIFICATION("ADDRESS_VERIFICATION")
     ;
 
     private final String jobName;

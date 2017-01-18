@@ -2,7 +2,7 @@ package com.fintech.oracle.service.api.request;
 
 import com.fintech.oracle.dataabstraction.entities.*;
 import com.fintech.oracle.dataabstraction.repository.*;
-import com.fintech.oracle.dto.messaging.JobResource;
+import com.fintech.oracle.dto.messaging.ProcessingJobMessage;
 import com.fintech.oracle.dto.request.Resource;
 import com.fintech.oracle.dto.request.VerificationProcess;
 import com.fintech.oracle.dto.request.VerificationRequest;
@@ -10,7 +10,6 @@ import com.fintech.oracle.dto.response.OcrFieldData;
 import com.fintech.oracle.dto.response.OcrFieldValue;
 import com.fintech.oracle.dto.response.OcrResponse;
 import com.fintech.oracle.dto.response.VerificationProcessResponse;
-import com.fintech.oracle.dto.messaging.ProcessingJobMessage;
 import com.fintech.oracle.jobchanel.producer.MessageProducer;
 import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
@@ -23,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -67,14 +67,27 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
 
     @Transactional
     @Override
-    public VerificationProcessResponse saveProcessingRequest(VerificationRequest verificationRequest) throws ConfigurationDataNotFoundException, DataNotFoundException {
+    public VerificationProcessResponse saveProcessingRequest(VerificationRequest verificationRequest) throws DataNotFoundException {
         VerificationProcessResponse response = new VerificationProcessResponse();
         OcrProcessingRequest ocrProcessingRequest = createNewOcrProcessingRequest();
+        ocrProcessingRequestRepository.save(ocrProcessingRequest);
 
         for (VerificationProcess v : verificationRequest.getVerificationProcesses()){
-            createNewOcrProcess(v, ocrProcessingRequest);
-        }
+            for (Resource r : v.getResources()){
+                OcrProcess ocrProcess = null;
+                try {
+                    ocrProcess = createNewOcrProcess(v, ocrProcessingRequest);
+                } catch (ConfigurationDataNotFoundException e) {
+                    throw new DataNotFoundException("One or more configuration data was not found ", e);
+                }
+                ocrProcessRepository.save(ocrProcess);
+                com.fintech.oracle.dataabstraction.entities.Resource resourceEntity =
+                        resourceRepository.findResourcesByResourceIdentificationCode(r.getResourceId());
+                resourceEntity.setOcrProcess(ocrProcess);
+                resourceRepository.save(resourceEntity);
+            }
 
+        }
         response.setVerificationProcessCode(ocrProcessingRequest.getProcessingRequestCode());
         return response;
     }
@@ -90,100 +103,97 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         return getOcrResponseObject(processingRequestList.get(0));
     }
 
-    @Transactional
+
     private OcrProcessingRequest createNewOcrProcessingRequest(){
         OcrProcessingRequest ocrProcessingRequest = new OcrProcessingRequest();
         ocrProcessingRequest.setProcessingRequestCode(UUID.randomUUID().toString());
         ocrProcessingRequest.setReceivedOn(new Date());
-        ocrProcessingRequestRepository.save(ocrProcessingRequest);
         return ocrProcessingRequest;
     }
 
-    @Transactional
-    private void createNewOcrProcess(VerificationProcess verificationProcess, OcrProcessingRequest processingRequest) throws ConfigurationDataNotFoundException, DataNotFoundException {
+    private OcrProcess createNewOcrProcess(VerificationProcess verificationProcess, OcrProcessingRequest processingRequest) throws ConfigurationDataNotFoundException, DataNotFoundException {
         OcrProcess ocrProcess = new OcrProcess();
         ocrProcess.setOcrProcessingRequest(processingRequest);
         ocrProcess.setOcrProcessingStatus(getProcessingStatus("pending"));
         ocrProcess.setOcrProcessType(getOcrProcessType(verificationProcess.getVerificationProcessType()));
-        ocrProcessRepository.save(ocrProcess);
-        updateResources(verificationProcess, ocrProcess);
-        for (Resource resource : verificationProcess.getResources()){
-            sendJob(ocrProcess, resource);
-        }
+
+        return ocrProcess;
 
     }
 
-
     @Transactional
+    @Override
+    public void updateJobQueue(String ocrProcessingRequestCode){
+
+        OcrProcessingRequest ocrProcessingRequest =
+                ocrProcessingRequestRepository.findOcrProcessingRequestsByProcessingRequestCode(ocrProcessingRequestCode).get(0);
+
+        for (OcrProcess ocrProcess : ocrProcessingRequest.getOcrProcesses()){
+            for (com.fintech.oracle.dataabstraction.entities.Resource resource : ocrProcess.getResources()){
+                Resource resourceDto = new Resource();
+                resourceDto.setResourceName(resource.getResourceName().getName());
+                resourceDto.setResourceId(resource.getResourceIdentificationCode());
+                sendJob(ocrProcess, resourceDto);
+            }
+        }
+    }
+
     private void sendJob(OcrProcess process, Resource resource){
         ProcessingJobMessage jobMessage = new ProcessingJobMessage();
         jobMessage.setOcrProcessId(String.valueOf(process.getId()));
         jobMessage.setResourceName(resource.getResourceName());
         jobMessage.setResourceId(resource.getResourceId());
-        try {
-            jobMessage.setImageData(getImageData(resource.getResourceId()));
-            messageProducer.sendMessage(jobMessage, jmsTemplate);
-        } catch (IOException e) {
-            LOGGER.error("Could not read data for resource with resource identification id {} ", resource.getResourceId(), e);
-        }
+        jobMessage.setImageData(getImageData(resource.getResourceId()));
+        messageProducer.sendMessage(jobMessage, jmsTemplate);
     }
 
-    @Transactional
-    private byte[] getImageData(String resourceIdentificationCode) throws IOException {
+
+    private byte[] getImageData(String resourceIdentificationCode){
         com.fintech.oracle.dataabstraction.entities.Resource resourceEntity =
-                resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode).get(0);
+                resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode);
         return getRawBytesFromFile(resourceFileBasePath + resourceEntity.getLocation());
     }
 
-    @Transactional
-    private static byte[] getRawBytesFromFile(String path) throws IOException {
+
+    private static byte[] getRawBytesFromFile(String path){
 
         byte[] image;
         File file = new File(path);
         image = new byte[(int)file.length()];
 
-        FileInputStream fileInputStream = new FileInputStream(file);
-        fileInputStream.read(image);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            int byteCount = 0;
+            byteCount = fileInputStream.read(image);
+            if (byteCount <= 0){
+                LOGGER.error("0 bytes read from file {}", path);
+            }
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Could not read file from path {} ", path, e);
 
+        } catch (IOException e) {
+            LOGGER.error("Unable to read file {} ", path, e);
+        }
         return image;
     }
 
-    @Transactional
+
     private OcrProcessType getOcrProcessType(String type) throws ConfigurationDataNotFoundException {
         List<OcrProcessType> processTypeList = ocrProcessTypeRepository.findOcrProcessTypesByType(type);
-        if(processTypeList.size() <= 0){
+        if(processTypeList.isEmpty()){
             throw new ConfigurationDataNotFoundException("No ocr processing type entry found in the table ocr_processing_type for type : " + type);
         }
         return processTypeList.get(0);
     }
 
-    @Transactional
+
     private OcrProcessingStatus getProcessingStatus(String status) throws ConfigurationDataNotFoundException {
         List<OcrProcessingStatus> processingStatusList = ocrProcessingStatusRepository.findOcrProcessingStatusByStatus(status);
-        if(processingStatusList.size() <= 0){
+        if(processingStatusList.isEmpty()){
             throw new ConfigurationDataNotFoundException("No ocr processing status entry found in the table ocr_processing_status for status : " + status);
         }
         return processingStatusList.get(0);
     }
 
-    @Transactional
-    private void updateResources(VerificationProcess verificationProcess, OcrProcess ocrProcess) throws DataNotFoundException, ConfigurationDataNotFoundException {
-        for (Resource r : verificationProcess.getResources()){
-            List<com.fintech.oracle.dataabstraction.entities.Resource> resourceList = resourceRepository.findResourcesByResourceIdentificationCode(r.getResourceId());
-            ResourceName resourceName = resourceNameRepository.findResourceNameByName(r.getResourceName());
-            if(resourceList.isEmpty()){
-                throw new DataNotFoundException("No resource found with resource identification code : " + r.getResourceId());
-            }
-            if(resourceName == null){
-                throw new ConfigurationDataNotFoundException("No configurations were found for resource name : " + r.getResourceName());
-            }
-            com.fintech.oracle.dataabstraction.entities.Resource resource = resourceList.get(0);
-            resource.setOcrProcess(ocrProcess);
-            resource.setResourceName(resourceName);
-            resource.setOcrProcessingStatus(getProcessingStatus("pending"));
-            resourceRepository.save(resource);
-        }
-    }
 
     private OcrResponse getOcrResponseObject(OcrProcessingRequest processingRequest){
         OcrResponse ocrResponse = new OcrResponse();
@@ -200,20 +210,16 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
 
     private String getGeneralProcessingStatus(OcrProcessingRequest processingRequest){
         List<OcrProcess> processList = new ArrayList<>(processingRequest.getOcrProcesses());
-        List<com.fintech.oracle.dataabstraction.entities.Resource> resourceList = new ArrayList<>();
-        for (OcrProcess ocrProcess : processList){
-            resourceList.addAll(ocrProcess.getResources());
+        Collections.sort(processList, (OcrProcess p1, OcrProcess p2) ->
+                p1.getOcrProcessingStatus().getId() - p2.getOcrProcessingStatus().getId());
+        String status = "pending";
+        if (!processList.isEmpty()){
+            status = processList.get(0).getOcrProcessingStatus().getStatus();
         }
-        Collections.sort(resourceList, new Comparator<com.fintech.oracle.dataabstraction.entities.Resource>() {
-            @Override
-            public int compare(com.fintech.oracle.dataabstraction.entities.Resource o1, com.fintech.oracle.dataabstraction.entities.Resource o2) {
-                return o1.getOcrProcessingStatus().getId() - o2.getOcrProcessingStatus().getId();
-            }
-        });
-        return resourceList.get(0).getOcrProcessingStatus().getStatus();
+        return status;
     }
 
-    @Transactional
+
     private List<OcrFieldData> getOcrFieldDataList(List<OcrResult> resultList){
         Iterable<OcrExtractionField> extractionFieldList = ocrExtractionFieldRepository.findAll();
         List<OcrFieldData> fieldDataList = new ArrayList<>();
@@ -226,7 +232,7 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         return fieldDataList;
     }
 
-    @Transactional
+
     private List<OcrFieldValue>getOcrFieldValueListForExtractionFieldList(List<OcrResult> results, String extractionField){
         List<OcrFieldValue> fieldValueList = new ArrayList<>();
         for (OcrResult result :

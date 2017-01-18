@@ -52,7 +52,7 @@ public class JobDetailService implements JobDetailServiceInterface{
 
     @Override
     public Resource getResourceDetails(String resourceIdentificationCode) throws DataNotFoundException {
-        Resource resource = resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode).get(0);
+        Resource resource = resourceRepository.findResourcesByResourceIdentificationCode(resourceIdentificationCode);
         if (resource == null){
             throw new DataNotFoundException("No resource found for the resource with resource identification code : " +
                     resourceIdentificationCode);

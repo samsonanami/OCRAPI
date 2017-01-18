@@ -1,5 +1,6 @@
 package com.fintech.oracle.service.apollo.job;
 
+import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,19 +12,20 @@ import org.springframework.stereotype.Component;
 public class JobFactory {
 
     @Autowired
-    IdVerificationJob idVerificationJob;
+    private IdVerificationJob idVerificationJob;
 
     @Autowired
-    AddressVerificationJob addressVerificationJob;
+    private AddressVerificationJob addressVerificationJob;
 
     public Job getJob(String jobType){
-        JobType type = JobType.valueOf(jobType);
-        switch (type){
-            case idVerification:
-                return idVerificationJob;
-            case addressVerification:
-                return addressVerificationJob;
+        String jobTypeString = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, jobType);
+        JobType type = JobType.valueOf(jobTypeString);
+        Job job = null;
+        if (type.equals(JobType.ID_VERIFICATION)){
+            job = idVerificationJob;
+        }else if (type.equals(JobType.ADDRESS_VERIFICATION)){
+            job = addressVerificationJob;
         }
-        return null;
+        return job;
     }
 }

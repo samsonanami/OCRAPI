@@ -19,9 +19,15 @@ public class ApiOriginFilter implements javax.servlet.Filter {
 
 	@Override
 	public void destroy() {
+		/**
+		 * destroy method is emphty as per the default configurations
+		 */
 	}
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+		/**
+		 * init method is emphty as per the default configurations
+		 */
 	}
 }

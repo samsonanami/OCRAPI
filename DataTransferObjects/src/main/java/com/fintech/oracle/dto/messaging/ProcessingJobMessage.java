@@ -1,7 +1,6 @@
 package com.fintech.oracle.dto.messaging;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by sasitha messaging on 12/6/16.

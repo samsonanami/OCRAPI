@@ -6,10 +6,6 @@ package com.fintech.oracle.service.common.exception;
  */
 public class NotFoundException extends Exception{
 
-    public NotFoundException(){
-
-    }
-
     public NotFoundException(Exception e){
         super(e);
     }

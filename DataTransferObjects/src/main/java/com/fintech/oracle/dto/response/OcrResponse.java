@@ -20,7 +20,7 @@ public class OcrResponse {
   private String status = null;
 
   @JsonProperty("data")
-  private List<OcrFieldData> data = new ArrayList<OcrFieldData>();
+  private List<OcrFieldData> data = new ArrayList<>();
 
   public OcrResponse verificationRequestId(String verificationRequestId) {
     this.verificationRequestId = verificationRequestId;

@@ -16,7 +16,11 @@ public class ApiResponseMessage {
 	String type;
 	String message;
 	
-	public ApiResponseMessage(){}
+	public ApiResponseMessage(){
+		/**
+		 * default constructor
+		 */
+	}
 	
 	public ApiResponseMessage(int code, String message){
 		this.code = code;

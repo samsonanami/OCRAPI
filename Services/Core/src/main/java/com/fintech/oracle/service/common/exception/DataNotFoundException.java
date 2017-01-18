@@ -6,9 +6,6 @@ package com.fintech.oracle.service.common.exception;
  */
 public class DataNotFoundException extends NotFoundException {
 
-    public DataNotFoundException(){
-
-    }
 
     public DataNotFoundException(Exception e){
         super(e);

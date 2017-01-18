@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class VerificationRequest   {
   @JsonProperty("verificationProcesses")
-  private List<VerificationProcess> verificationProcesses = new ArrayList<VerificationProcess>();
+  private List<VerificationProcess> verificationProcesses = new ArrayList<>();
 
   public VerificationRequest verificationProcesses(List<VerificationProcess> verificationProcesses) {
     this.verificationProcesses = verificationProcesses;

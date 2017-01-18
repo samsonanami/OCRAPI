@@ -6,9 +6,6 @@ package com.fintech.oracle.service.common.exception;
  */
 public class ConfigurationDataNotFoundException extends NotFoundException{
 
-    public ConfigurationDataNotFoundException(){
-    }
-
     public ConfigurationDataNotFoundException(String message){
         super(message);
     }

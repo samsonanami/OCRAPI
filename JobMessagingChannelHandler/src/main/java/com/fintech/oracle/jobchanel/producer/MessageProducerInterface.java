@@ -8,6 +8,7 @@ import java.io.Serializable;
  * Created by sasitha on 12/6/16.
  *
  */
+@FunctionalInterface
 public interface MessageProducerInterface {
 
     void sendMessage(Serializable jobMessage, JmsTemplate jmsTemplate);

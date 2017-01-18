@@ -3,7 +3,6 @@ package com.fintech.oracle.service.apollo.jni;
 import com.fintech.oracle.dto.jni.ZvImage;
 import com.fintech.oracle.service.apollo.exception.JobException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +27,7 @@ public class JNIImageProcessor {
         }
     }
 
-    public ZvImage processDocument(String documentCategory, ZvImage srcImage){
+    public ZvImage processImage(String documentCategory, ZvImage srcImage){
         ZvImage processedImage = new ZvImage();
         this.ProcessDocument(srcImage, documentCategory, processedImage);
         return processedImage;

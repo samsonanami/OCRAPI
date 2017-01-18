@@ -17,7 +17,7 @@ public class VerificationProcess   {
   private String verificationProcessType = null;
 
   @JsonProperty("resources")
-  private List<Resource> resources = new ArrayList<Resource>();
+  private List<Resource> resources = new ArrayList<>();
 
   public VerificationProcess verificationProcessType(String verificationProcessType) {
     this.verificationProcessType = verificationProcessType;
