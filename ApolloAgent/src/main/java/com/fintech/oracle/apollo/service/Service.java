@@ -19,7 +19,7 @@ public class Service implements Daemon {
     private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
 
     public static void main(String[] args) {
-        LOGGER.debug("Starting Apollo agent from main method with arguments {} ", args);
+        LOGGER.debug("Starting Apollo agent from main method with arguments {} ", (Object[])args);
         initializeApplicationContext();
     }
 
