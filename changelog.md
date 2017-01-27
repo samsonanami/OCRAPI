@@ -1,6 +1,12 @@
 Oracle - Changelog
 ==================
 
+Unreleased
+----------
+(2017-01-18 10:48:01 +0530	) [ci-skip] updated changelog
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+
 1.0.1-0.0.1 (2017-01-18 10:45:12 +0530)
 ---------------------------------------
 (2017-01-18 10:45:12 +0530	) Fixed compilation warning on using args in main method

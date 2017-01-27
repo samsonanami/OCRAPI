@@ -8,4 +8,6 @@ import org.springframework.data.repository.CrudRepository;
  *
  */
 public interface OcrExtractionFieldRepository extends CrudRepository<OcrExtractionField, Integer>{
+
+    OcrExtractionField findResourceNameOcrExtractionFieldsByField(String field);
 }

@@ -5,6 +5,8 @@ import com.fintech.oracle.dataabstraction.entities.OcrResult;
 import com.fintech.oracle.dataabstraction.entities.Resource;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
 
+import java.util.List;
+
 /**
  * Created by sasitha on 12/7/16.
  *
@@ -17,7 +19,9 @@ public interface JobDetailServiceInterface {
 
     Resource getResourceDetails(String resourceIdentificationCode) throws DataNotFoundException;
 
-    void saveOcrResults(OcrResult results);
+    void saveOcrResults(List<OcrResult> results);
+
+    void saveOcrResult(OcrResult result);
 
     void updateOcrProcessStatus(OcrProcess process, String status);
 

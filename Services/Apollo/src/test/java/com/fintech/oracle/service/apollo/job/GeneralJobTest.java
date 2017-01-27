@@ -17,11 +17,13 @@ public class GeneralJobTest {
 
     private String resultString;
     private String errorString;
+    private String invalidResultString;
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         resultString = "Surname##KULARATNE##84%%Given Names##PARINDA SANJAYA##86%%Passport Number##512779062##85%%Nationality##BRITISH CITIZEN##89%%Sex##M##83%%Date of Birth##25 JUL /JUIL 74##92%%Date of Expiry##22 NOV [NOV 22##92%%Issuing Authorithy##IPS##89%%Place of Birth##COLOMBO##83%%Place of Issue##GBR‘##19%%Date of Issue##g2TNoy /Nov 12##0%%MRZ Line1##P<GBRKULARATNE<<PARINDA<SANJAYA<<<<<<<<<<<<<##88%%MRZ Line2##5127790629GBR7407251M2211226<<<<<<<<<<<<<<01+##76%%";
         errorString = "                             Processing Failure##Invalid Template.Please contact the service provider##0%% ";
+        invalidResultString = "Surname####-1%%Given Names####%%";
     }
 
     @Test
