@@ -59,4 +59,28 @@ public class GeneralJobTest {
         assertEquals("Invalid Template.Please contact the service provider", value);
     }
 
+    @Test
+    public void should_return_the_ocr_field_value_as_empty_if_raw_string_value_is_empty()throws Exception{
+        String extracted = generalJob.getFieldValueConfidenceFromResultString(invalidResultString, "surname");
+        String value = generalJob.getExtractedFieldValue(extracted, "surname");
+
+        assertEquals("", value);
+    }
+
+    @Test
+    public void should_return_the_ocr_confidence_as_zero_if_raw_value_is_invalid()throws Exception{
+        String extracted = generalJob.getFieldValueConfidenceFromResultString(invalidResultString, "surname");
+        String confidence = generalJob.getExtractedFieldOcrConfidence(extracted, "surname");
+
+        assertEquals("0.0", confidence);
+    }
+
+    @Test
+    public void should_return_the_ocr_confidence_as_zero_if_raw_value_is_empty()throws Exception{
+        String extracted = generalJob.getFieldValueConfidenceFromResultString(invalidResultString, "given_names");
+        String confidence = generalJob.getExtractedFieldOcrConfidence(extracted, "given_names");
+
+        assertEquals("0.0", confidence);
+    }
+
 }
