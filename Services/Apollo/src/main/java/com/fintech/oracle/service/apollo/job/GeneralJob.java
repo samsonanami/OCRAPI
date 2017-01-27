@@ -225,7 +225,7 @@ public class GeneralJob {
         String pattern = "##([0-9]+\\.?[0-9]+)%%";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(fieldValueConfidenceString.trim());
-        String result = "";
+        String result = "0.0";
         if(m.find()){
             result = m.group(0);
         }
