@@ -1,6 +1,7 @@
 package com.fintech.oracle.service.apollo.job;
 
 import com.fintech.oracle.dataabstraction.entities.*;
+import com.fintech.oracle.dataabstraction.repository.OcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameOcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameRepository;
 import com.fintech.oracle.dto.jni.ZvImage;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +47,15 @@ public class GeneralJob {
 
     @Autowired
     private ResourceNameOcrExtractionFieldRepository resourceNameOcrExtractionFieldRepository;
+
+    @Autowired
+    private String minimumOcrConfidenceCheckFailedMessage;
+
+    @Autowired
+    private String processingFailureOcrExtractionFieldName;
+
+    @Autowired
+    private OcrExtractionFieldRepository ocrExtractionFieldRepository;
 
 
     public void startProcessing(Serializable message) throws JobException {
@@ -108,6 +119,7 @@ public class GeneralJob {
             throw new ConfigurationDataNotFoundException("No ocr extraction information found for resource name : "
                     + resourceName.getName());
         }
+        List<OcrResult> ocrResultList = new ArrayList<>();
         for (ResourceNameOcrExtractionField extractionField : resourceNameOcrExtractionFieldList){
 
             String ocrExtractionField = extractionField.getOcrExtractionField().getField();
@@ -125,8 +137,10 @@ public class GeneralJob {
             ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
 
             LOGGER.debug("saving results {}", ocrResult);
-            jobDetailService.saveOcrResults(ocrResult);
+            ocrResultList.add(ocrResult);
+
         }
+        jobDetailService.saveOcrResults(ocrResultList);
     }
 
     public void saveExtractedDetails(String resultString, OcrProcess ocrProcess, ResourceName resourceName)
@@ -137,6 +151,9 @@ public class GeneralJob {
             throw new ConfigurationDataNotFoundException("No ocr extraction information found for resource name : " +
                     resourceName.getName());
         }
+        List<OcrResult> ocrResultList = new ArrayList<>();
+        boolean isLowerThanMinimumAcceptableOcrExtractionConfidenceValue = false;
+
         for (ResourceNameOcrExtractionField extractionField : resourceNameOcrExtractionFieldList){
             String ocrExtractionField = extractionField.getOcrExtractionField().getField();
             String fieldValueConfidenceString = getFieldValueConfidenceFromResultString(resultString, ocrExtractionField);
@@ -145,15 +162,49 @@ public class GeneralJob {
             if(ocrConfidenceValue.isEmpty()){
                 ocrConfidenceValue = "0";
             }
-            OcrResult ocrResult = new OcrResult();
-            ocrResult.setOcrProcess(ocrProcess);
-            ocrResult.setResourceNameOcrExtractionField(extractionField);
-            ocrResult.setValue(extractedValue);
-            ocrResult.setOcrConfidence(Double.valueOf(ocrConfidenceValue));
-            ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
-            LOGGER.debug("saving results {}", ocrResult);
-            jobDetailService.saveOcrResults(ocrResult);
+
+            if (extractionField.getMinimumAcceptableOcrConfidence() != null &&
+                    !ocrExtractionField.equalsIgnoreCase(processingFailureOcrExtractionFieldName) &&
+                    Double.valueOf(ocrConfidenceValue) < extractionField.getMinimumAcceptableOcrConfidence()){
+                isLowerThanMinimumAcceptableOcrExtractionConfidenceValue = true;
+                LOGGER.warn("Ocr extraction field confidence value is lower than the minimum acceptable value. " +
+                        "minimum acceptable value is : {} but actual confidence is : {} ",
+                        extractionField.getMinimumAcceptableOcrConfidence(), ocrConfidenceValue);
+                break;
+            }else {
+                ocrResultList.add(getOcrResultObject(ocrProcess, extractedValue,
+                        Double.valueOf(ocrConfidenceValue), resourceName, ocrExtractionField, extractionField));
+            }
+
         }
+        if(isLowerThanMinimumAcceptableOcrExtractionConfidenceValue){
+
+            OcrExtractionField ocrExtractionField = ocrExtractionFieldRepository
+                    .findResourceNameOcrExtractionFieldsByField(processingFailureOcrExtractionFieldName);
+            ocrResultList = new ArrayList<>();
+            ResourceNameOcrExtractionField resourceNameExtractionField = resourceNameOcrExtractionFieldRepository
+                    .findResourceNameOcrExtractionFieldsByOcrExtractionFieldAndResourceName(
+                            ocrExtractionField, resourceName);
+
+            ocrResultList.add(getOcrResultObject(ocrProcess, minimumOcrConfidenceCheckFailedMessage,
+                    0.0, resourceName, processingFailureOcrExtractionFieldName, resourceNameExtractionField));
+            jobDetailService.updateOcrProcessStatus(ocrProcess, PROCESSING_FAILD_STATUS);
+        }
+        LOGGER.debug("Saving ocr result list {} ", ocrResultList);
+        jobDetailService.saveOcrResults(ocrResultList);
+
+    }
+
+    private OcrResult getOcrResultObject(OcrProcess ocrProcess, String value, Double confidence,
+                                         ResourceName resourceName, String extractionField,
+                                         ResourceNameOcrExtractionField resourceNameOcrExtractionField){
+        OcrResult ocrResult = new OcrResult();
+        ocrResult.setOcrProcess(ocrProcess);
+        ocrResult.setOcrConfidence(confidence);
+        ocrResult.setValue(value);
+        ocrResult.setResourceNameOcrExtractionField(resourceNameOcrExtractionField);
+        ocrResult.setResultName(resourceName.getName() + "##" + extractionField);
+        return ocrResult;
     }
 
     @Transactional

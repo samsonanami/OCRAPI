@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by sasitha on 12/7/16.
  *
@@ -62,8 +64,14 @@ public class JobDetailService implements JobDetailServiceInterface{
 
     @Override
     @Transactional
-    public void saveOcrResults(OcrResult results) {
+    public void saveOcrResult(OcrResult results) {
         ocrResultRepository.save(results);
+    }
+
+    @Override
+    @Transactional
+    public void saveOcrResults(List<OcrResult> ocrResultList){
+        ocrResultRepository.save(ocrResultList);
     }
 
     @Override

@@ -44,4 +44,13 @@
     </bean>
 
     <bean id="jniImageProcessor" class="com.fintech.oracle.service.apollo.jni.JNIImageProcessor"/>
+
+    <bean id="minimumOcrConfidenceCheckFailedMessage" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="Processing Failure##Unable to extract details from the supplied
+        image. This is most probably due to a low quality image.##0%%"/>
+    </bean>
+
+    <bean id="processingFailureOcrExtractionFieldName" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="processing_failure"/>
+    </bean>
 </beans>
