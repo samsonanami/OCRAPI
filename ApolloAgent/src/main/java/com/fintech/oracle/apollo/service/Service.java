@@ -7,8 +7,10 @@ import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * Created by sasitha on 12/6/16.
@@ -17,7 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Service implements Daemon {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Service.class);
-
+    private static final String ENV_FILE = "file";
     public static void main(String[] args) {
         LOGGER.debug("Starting Apollo agent from main method with arguments {} ", (Object[])args);
         initializeApplicationContext();
@@ -45,13 +47,21 @@ public class Service implements Daemon {
     }
 
     private static   void initializeApplicationContext(){
-        LOGGER.debug("Loading application context file : ${environment}-context.xml  from classpath ");
-        AbstractApplicationContext applicationContext =
-                new ClassPathXmlApplicationContext("classpath*:${environment}-application-context.xml");
-        LOGGER.debug("Loaded application context");
+
+        String applicationContextLoadLocation = System.getProperty("applicationContextLoadFrom");
+        ApplicationContext applicationContext;
+        String contextFilePath = System.getProperty("contextFilePath");
+        String contextFileName = System.getProperty("contextFileName");
+        if(ENV_FILE.equals(applicationContextLoadLocation)){
+            LOGGER.debug("Loading application context file from file system");
+            applicationContext = new FileSystemXmlApplicationContext("file:"+contextFilePath+contextFileName);
+        }else {
+            LOGGER.debug("Loading application context file from classpath");
+            applicationContext =
+                    new ClassPathXmlApplicationContext("classpath*:"+contextFileName);
+        }
         LOGGER.debug("Initialising JNI image processing agent");
         JNIImageProcessor jniImageProcessor = (JNIImageProcessor) applicationContext.getBean("jniImageProcessor");
-
         try {
             jniImageProcessor.initializeAgent();
             LOGGER.debug("Successfully initialized JNI image processing agent.");
