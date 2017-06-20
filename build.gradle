@@ -2,6 +2,7 @@ plugins {
     id "com.gradle.build-scan" version "1.2"
     id "net.vivin.gradle-semantic-build-versioning" version "2.0.2"
     id "com.selesse.git.changelog" version "0.3.0"
+    id "com.palantir.jacoco-coverage" version "0.4.0"
 }
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
@@ -10,11 +11,14 @@ buildScan {
 group = "com.fintech.oracle"
 apply plugin: "idea"
 apply plugin: 'com.selesse.git.changelog'
+apply plugin: 'com.palantir.jacoco-coverage'
+apply plugin: 'com.palantir.jacoco-full-report'
 allprojects {
     group = "com.fintech.orion"
     apply plugin: "idea"
     apply plugin: 'java'
     apply plugin: 'net.vivin.gradle-semantic-build-versioning'
+    apply plugin: "jacoco"
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
     project.version.with {
@@ -36,7 +40,15 @@ allprojects {
         }
 
     }
+
+    jacoco {
+        toolVersion = "0.7.6.201602180812"
+        reportsDir = file("$buildDir")
+    }
+
 }
+
+
 
 changelog {
     // The title appears at the top of the changelog.

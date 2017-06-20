@@ -46,6 +46,13 @@ sourceSets {
     }
 }
 
-task buildApollo(dependsOn : ['copyLibs', 'copyConfigs'])
+task bsxBuilder(type: Exec){
+
+    workingDir '../Deployment/executer'
+    commandLine './executer.sh'
+}
+
+task buildApollo(dependsOn : ['copyLibs', 'copyConfigs', 'bsxBuilder'])
 copyLibs.mustRunAfter build
 copyConfigs.mustRunAfter copyLibs
+bsxBuilder.mustRunAfter copyConfigs

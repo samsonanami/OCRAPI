@@ -36,7 +36,8 @@
     <bean id="jobDetailService" class="com.fintech.oracle.service.apollo.job.JobDetailService"/>
 
     <bean id="configurationFilePath" class="java.lang.String">
-        <constructor-arg type="java.lang.String" value="/test"/>
+        <constructor-arg type="java.lang.String"
+          value="/media/sasitha/Projects/Orion/Code/DocumentDataExtractor/Document_Data_Extractor_Configuration.xml"/>
     </bean>
 
     <bean id="resourceFileBasePath" class="java.lang.String">
@@ -52,5 +53,10 @@
 
     <bean id="processingFailureOcrExtractionFieldName" class="java.lang.String">
         <constructor-arg type="java.lang.String" value="processing_failure"/>
+    </bean>
+
+    <bean id="nativeLibraryLocation" class="java.lang.String">
+        <constructor-arg type="java.lang.String"
+                         value="/media/sasitha/Projects/Orion/Code/ocr-linux/build/dist/libDocumentDataExtractor.so"/>
     </bean>
 </beans>

@@ -1,0 +1,14 @@
+[Unit]
+Description=Apollo-xx service demon
+After=syslog.target network.target
+
+[Service]
+User=idapi
+Group=idapi
+ExecStart=/opt/oracle/apollo-xx/Apollo.sh start
+KillMode=process
+Restart=on-failure
+RestartSec=3s
+
+[Install]
+WantedBy=multi-user.target

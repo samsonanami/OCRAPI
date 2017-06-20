@@ -3,6 +3,28 @@ Oracle - Changelog
 
 Unreleased
 ----------
+(2017-01-27 18:20:02 +0530	) handle empty results value
+ handling empty and invalid ocr extraction value and ocr
+cofidence values return by the native library
+
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-01-27 18:09:58 +0530	) Merge branch 'handle-low-confidence-ocr-values' into 'develop'
+ validate minimum acceptable ocr confidence level
+
+for each ocr extraction field in an image a minimum acceptable ocr
+confidence value can be configured int the resource_name_ocr_extraction_field table.
+if the ocr extration confidence value is lower than this value ocr process status
+will be set to fail. To skip this validation keep the database value as null
+
+See merge request !8
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-01-27 18:05:33 +0530	) validate minimum acceptable ocr confidence level
+ for each ocr extraction field in an image a minimum acceptable ocr
+confidence value can be configured int the resource_name_ocr_extraction_field table.
+if the ocr extration confidence value is lower than this value ocr process status
+will be set to fail. To skip this validation keep the database value as null
+
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
 (2017-01-18 10:48:01 +0530	) [ci-skip] updated changelog
  
  (Sasitha Gunadasa)(sasithag@zone24x7.com)
