@@ -1,12 +1,18 @@
 package com.fintech.oracle.service.apollo.job;
 
 import com.fintech.oracle.dataabstraction.entities.*;
+import com.fintech.oracle.dataabstraction.entities.Resource;
 import com.fintech.oracle.dataabstraction.repository.OcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameOcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameRepository;
 import com.fintech.oracle.dto.jni.ZvImage;
 import com.fintech.oracle.dto.messaging.ProcessingJobMessage;
+import com.fintech.oracle.service.apollo.connector.Connector;
+import com.fintech.oracle.service.apollo.connector.ConnectorType;
+import com.fintech.oracle.service.apollo.connector.abbyy.task.Task;
+import com.fintech.oracle.service.apollo.connector.factory.ConnectorFactory;
 import com.fintech.oracle.service.apollo.exception.JobException;
+import com.fintech.oracle.service.apollo.exception.connector.ConnectorException;
 import com.fintech.oracle.service.apollo.jni.JNIImageProcessor;
 import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.fintech.oracle.service.common.exception.DataNotFoundException;
@@ -18,10 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +68,12 @@ public class GeneralJob {
     @Autowired
     private OcrExtractionFieldRepository ocrExtractionFieldRepository;
 
+    @Autowired
+    private ConnectorFactory connectorFactory;
+
+    @javax.annotation.Resource(name = "abbyyCloudAPIConfigurations")
+    private Map<String,String>  abbyyCloudAPIConfigurations;
+
 
     public void startProcessing(Serializable message) throws JobException {
         try {
@@ -87,27 +104,29 @@ public class GeneralJob {
                 saveJsonDetails(jsonObj,  process, resourceName);
                 jobDetailService.updateOcrProcessStatus(process, PROCESSING_SUCCESS_STATUS);
             }else {
-                ZvImage resultImage = jniImageProcessor.processImage(resourceConfigurationName,
-                        getSourceImage(jobMessage));
-                LOGGER.debug("Received processed results from dll {}", resultImage);
-                LOGGER.debug("Received result set from jniImageProcessor " + resultImage.getOutput());
-                LOGGER.debug("Received error set from jniImageProcessor " + resultImage.getError());
-                if(resultImage.getError().isEmpty()){
-                    saveExtractedDetails(resultImage.getOutput(), process, resourceName);
-                    jobDetailService.updateOcrProcessStatus(process, PROCESSING_SUCCESS_STATUS);
-                }else {
-                    saveExtractedDetails(resultImage.getError(), process, resourceName);
-                    jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILD_STATUS);
+                Map<String,String> connectorConfigurations = new HashMap<>();
+                connectorConfigurations.putAll(abbyyCloudAPIConfigurations);
+                Connector<Task> abbyConnector =  connectorFactory.getConnector(ConnectorType.ABBYY);
+                abbyConnector.setConfigurations(connectorConfigurations);
+
+                Map<String, String> processingConfiguration = new HashMap<String, String>();
+                processingConfiguration.put("fileName", jobMessage.getResourceId()+".jpg");
+                Future<Task> abbyResultForNonPreProcessedImage = abbyConnector.submitForProcessing(jobMessage.getImageData(), processingConfiguration);
+
+                try {
+                    LOGGER.info("Completed processing task : {} ", abbyResultForNonPreProcessedImage.get());
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new JobException("Error while processing resource ", e);
                 }
             }
-        }catch (ConfigurationDataNotFoundException e){
+        }catch (ConfigurationDataNotFoundException  e){
             jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILD_STATUS);
             throw new JobException("Could not find required configuration data for resource with id : " +
                     "" + jobMessage.getResourceId() + " and resource name : " + resource.getResourceName(), e);
-        } catch (IOException e) {
+        } catch (ConnectorException e) {
             jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILD_STATUS);
-            throw new JobException("Error occurred while processing resource id " +
-                    "" + jobMessage.getResourceId() + " and resource name : " + resource.getResourceName(), e);
+            throw new JobException("Error occurred while processing documents using ABBYY API. ocr process id : " +
+            jobMessage.getOcrProcessId() + " resource id : " + jobMessage.getResourceId());
         }
     }
 

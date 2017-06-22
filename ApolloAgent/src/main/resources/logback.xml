@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-    <property name="LOG_HOME" value="/opt/oracle/apollo_01/logs" />
+    <property name="LOG_HOME" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/build/logs" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">

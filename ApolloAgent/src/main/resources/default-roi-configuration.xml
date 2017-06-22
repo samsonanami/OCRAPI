@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd
+          http://ocrsdk.com/schema/taskDescription-1.0.xsd">
+    <fieldTemplates>
+        <text id="textField" bottom="0" left="0" right="0" top="0">
+            <language>English</language>
+            <textType>matrix</textType>
+            <oneTextLine>true</oneTextLine>
+        </text>
+    </fieldTemplates>
+    <page applyTo="0">
+        <text template="textField" id="surname" left="1908" top="915" right="2574" bottom="1053">
+            <language>English</language>
+        </text>
+        <text template="textField" id="given_name" left="1902" top="170" right="3732" bottom="1314">
+            <language>English</language>
+        </text>
+        <text template="textField" id="date_of_birth" left="1920" top="2175" right="3204" bottom="2310">
+            <language>English</language>
+        </text>
+        <text template="textField" id="address_line_01" left="1926" top="2416" right="3417" bottom="2538">
+            <language>English</language>
+        </text>
+        <text template="textField" id="address_line_02" left="456" top="3036" right="4926" bottom="3156">
+            <language>English</language>
+        </text>
+        <text template="textField" id="address_line_03" left="480" top="3291" right="4935" bottom="3417">
+            <language>English</language>
+        </text>
+    </page>
+</document>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <util:map id="connectorMap" value-type="com.fintech.oracle.service.apollo.connector.Connector">
+        <entry key="ABBYY" value-ref="abbyyConnector"/>
+    </util:map>
+
+    <bean id="abbyyConnector" class="com.fintech.oracle.service.apollo.connector.abbyy.AbbyyConnectorImpl"/>
+
+
+    <bean id="connectorFactory" class="com.fintech.oracle.service.apollo.connector.factory.ConnectorFactory"/>
+    <bean id="requestBuilderFactory" class="com.fintech.oracle.service.apollo.connector.transmission.request.RequestBuilderFactory"/>
+    <bean id="requestSubmitter" class="com.fintech.oracle.service.apollo.connector.transmission.submit.RequestSubmitterImpl"/>
+
+
+    <util:map id="configurationFileMap" value-type="java.lang.String">
+        <entry key="DEFAULT" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/default-roi-configuration.xml"/>
+    </util:map>
+
+
+    <bean id="roiConfigurationFileFactory" class="com.fintech.oracle.service.apollo.connector.abbyy.config.roi.factory.RoiConfigurationFileFactory"/>
+
+
+    <util:map id="abbyyCloudAPIConfigurations" value-type="java.lang.String">
+        <entry key="baseUrl" value="http://cloud.ocrsdk.com"/>
+        <entry key="appId" value="orion-web"/>
+        <entry key="password" value="ucq88XOEa66emy3e427l3oPW"/>
+    </util:map>
+</beans>

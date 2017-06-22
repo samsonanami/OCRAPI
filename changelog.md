@@ -3,6 +3,27 @@ Oracle - Changelog
 
 Unreleased
 ----------
+(2017-06-20 11:23:55 +0530	) Merge branch 'handle_empty_ocr_extraction_values' into 'develop'
+ Handle empty ocr extraction values
+
+
+
+See merge request !12
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-20 11:23:05 +0530	) Merge branch 'develop' of git.zone24x7.lk:IDAPI/OCRAPI into handle_empty_ocr_extraction_values
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-20 11:22:40 +0530	) add Apollo agent deployment scripts
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-01-27 18:22:05 +0530	) Merge branch 'handle_empty_ocr_extraction_values' into 'develop'
+ handle empty results value
+
+handling empty and invalid ocr extraction value and ocr
+cofidence values return by the native library
+
+See merge request !9
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
 (2017-01-27 18:20:02 +0530	) handle empty results value
  handling empty and invalid ocr extraction value and ocr
 cofidence values return by the native library
