@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd
-          http://ocrsdk.com/schema/taskDescription-1.0.xsd">
+<document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd">
     <fieldTemplates>
         <text id="textField" bottom="0" left="0" right="0" top="0">
             <language>English</language>
@@ -11,22 +8,22 @@
         </text>
     </fieldTemplates>
     <page applyTo="0">
-        <text template="textField" id="surname" left="1908" top="915" right="2574" bottom="1053">
+        <text template="textField" id="surname" left="411" top="88" right="728" bottom="130">
             <language>English</language>
         </text>
-        <text template="textField" id="given_name" left="1902" top="170" right="3732" bottom="1314">
+        <text template="textField" id="given_names" left="415" top="113" right="732" bottom="175">
             <language>English</language>
         </text>
-        <text template="textField" id="date_of_birth" left="1920" top="2175" right="3204" bottom="2310">
+        <text template="textField" id="date_of_birth" left="383" top="209" right="609" bottom="272">
             <language>English</language>
         </text>
-        <text template="textField" id="address_line_01" left="1926" top="2416" right="3417" bottom="2538">
+        <text template="textField" id="date_of_issue" left="410" top="252" right="616" bottom="316">
             <language>English</language>
         </text>
-        <text template="textField" id="address_line_02" left="456" top="3036" right="4926" bottom="3156">
+        <text template="textField" id="date_of_expiry" left="410" top="293" right="615" bottom="353">
             <language>English</language>
         </text>
-        <text template="textField" id="address_line_03" left="480" top="3291" right="4935" bottom="3417">
+        <text template="textField" id="address_line1" left="406" top="333" right="897" bottom="396">
             <language>English</language>
         </text>
     </page>

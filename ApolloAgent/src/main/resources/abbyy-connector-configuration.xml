@@ -28,4 +28,22 @@
         <entry key="appId" value="orion-web"/>
         <entry key="password" value="ucq88XOEa66emy3e427l3oPW"/>
     </util:map>
+
+
+    <util:map id="resultTransformerMap" value-type="com.fintech.oracle.service.apollo.transformer.ResultTransformer">
+        <entry key="ABBYY" value-ref="abbyyResultTransformer"/>
+    </util:map>
+
+    <bean id="abbyyResultTransformer" class="com.fintech.oracle.service.apollo.transformer.abbyy.AbbyResultTransformer"/>
+
+    <bean id="resultTransformerFactory" class="com.fintech.oracle.service.apollo.transformer.factory.ResultTransformerFactory"/>
+
+
+    <util:map id="ocrResultExtractorConfigurations" value-type="com.fintech.oracle.service.apollo.extractor.ResultExtractor">
+        <entry key="ABBYY" value-ref="abbyResultExtractor"/>
+    </util:map>
+
+    <bean id="abbyResultExtractor" class="com.fintech.oracle.service.apollo.extractor.abbyy.AbbyyResultExtractor"/>
+
+    <bean id="resultExtractorFactory" class="com.fintech.oracle.service.apollo.extractor.factory.ResultExtractorFactory"/>
 </beans>

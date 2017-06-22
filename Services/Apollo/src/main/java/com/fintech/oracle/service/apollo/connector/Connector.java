@@ -4,6 +4,7 @@ import com.fintech.oracle.service.apollo.exception.connector.ConnectorException;
 import com.fintech.oracle.service.apollo.exception.connector.abbyy.AbbyyConnectorException;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 /**
@@ -12,5 +13,5 @@ import java.util.concurrent.Future;
  */
 public interface Connector<E> {
     void setConfigurations(Map<String, String> configurations);
-    Future<E> submitForProcessing(byte[] image, Map<String, String> processingConfigurations) throws ConnectorException;
+    CompletableFuture<E> submitForProcessing(byte[] image, Map<String, String> processingConfigurations) throws ConnectorException;
 }

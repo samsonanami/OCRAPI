@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://ocrsdk.com/schema/resultDescription-1.0.xsd
+          http://ocrsdk.com/schema/resultDescription-1.0.xsd"
+          xmlns="http://ocrsdk.com/schema/resultDescription-1.0.xsd">
+    <page index="0">
+        <text id="surname" left="1908" top="915" right="2574" bottom="1053">
+            <value>SORRELL</value>
+            <line left="1946" top="929" right="2489" bottom="1034">
+                <char left="1946" top="931" right="2003" bottom="1034">S</char>
+                <char left="2022" top="932" right="2089" bottom="1034">O</char>
+                <char left="2106" top="929" right="2165" bottom="1035">R</char>
+                <char left="2188" top="931" right="2249" bottom="1032">R</char>
+                <char left="2270" top="926" right="2331" bottom="1033">E</char>
+                <char left="2356" top="929" right="2407" bottom="1035">L</char>
+                <char left="2436" top="928" right="2489" bottom="1034">L</char>
+            </line>
+        </text>
+        <text id="given_name" left="1902" top="170" right="3732" bottom="1314">
+            <value></value>
+            <line left="0" top="0" right="0" bottom="0" />
+        </text>
+        <text id="date_of_birth" left="1920" top="2175" right="3204" bottom="2310">
+            <value>09 JAN /JAN 07</value>
+            <line left="1962" top="2180" right="3071" bottom="2306">
+                <char left="1962" top="2192" right="2023" bottom="2287">0</char>
+                <char left="2046" top="2191" right="2103" bottom="2287">9</char>
+                <char left="2103" top="2187" right="2210" bottom="2286"> </char>
+                <char left="2210" top="2186" right="2263" bottom="2285">J</char>
+                <char left="2282" top="2185" right="2351" bottom="2284">A</char>
+                <char left="2366" top="2184" right="2427" bottom="2284">N</char>
+                <char left="2427" top="2176" right="2526" bottom="2311"> </char>
+                <char left="2526" top="2175" right="2591" bottom="2310">/</char>
+                <char left="2614" top="2178" right="2667" bottom="2281">J</char>
+                <char left="2682" top="2181" right="2751" bottom="2281">A</char>
+                <char left="2766" top="2180" right="2831" bottom="2280">N</char>
+                <char left="2831" top="2180" right="2930" bottom="2283"> </char>
+                <char left="2930" top="2187" right="2991" bottom="2282">0</char>
+                <char left="3014" top="2182" right="3071" bottom="2278">7</char>
+            </line>
+        </text>
+        <text id="address_line_01" left="1926" top="2416" right="3417" bottom="2538">
+            <value>09 MAR /MARS 17</value>
+            <line left="1964" top="2428" right="3154" bottom="2541">
+                <char left="1965" top="2440" right="2025" bottom="2531">0</char>
+                <char left="2049" top="2439" right="2105" bottom="2531">9</char>
+                <char left="2105" top="2431" right="2200" bottom="2534"> </char>
+                <char left="2200" top="2430" right="2281" bottom="2533">M</char>
+                <char left="2284" top="2429" right="2353" bottom="2532">A</char>
+                <char left="2368" top="2428" right="2429" bottom="2532">R</char>
+                <char left="2429" top="2424" right="2529" bottom="2547"> </char>
+                <char left="2528" top="2423" right="2594" bottom="2546">/</char>
+                <char left="2600" top="2426" right="2681" bottom="2529">M</char>
+                <char left="2684" top="2425" right="2753" bottom="2529">A</char>
+                <char left="2768" top="2424" right="2829" bottom="2528">R</char>
+                <char left="2852" top="2428" right="2913" bottom="2527">S</char>
+                <char left="2913" top="2427" right="3016" bottom="2526"> </char>
+                <char left="3017" top="2434" right="3069" bottom="2526">1</char>
+                <char left="3097" top="2429" right="3153" bottom="2525">7</char>
+            </line>
+        </text>
+        <text id="address_line_02" left="456" top="3036" right="4926" bottom="3156">
+            <value>P&lt;GBRSORRELL&lt;&lt;AMBER&lt;KATHERINE&lt;MILLS&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</value>
+            <line left="542" top="3077" right="4867" bottom="3145">
+                <char left="542" top="3085" right="615" bottom="3184">P</char>
+                <char left="642" top="3080" right="715" bottom="3175">&lt;</char>
+                <char left="742" top="3079" right="815" bottom="3182">G</char>
+                <char left="842" top="3082" right="919" bottom="3182">B</char>
+                <char left="946" top="3081" right="1011" bottom="3177">R</char>
+                <char left="1046" top="3076" right="1111" bottom="3180">S</char>
+                <char left="1142" top="3075" right="1215" bottom="3175">O</char>
+                <char left="1246" top="3074" right="1311" bottom="3174">R</char>
+                <char left="1346" top="3074" right="1411" bottom="3173">R</char>
+                <char left="1446" top="3073" right="1511" bottom="3172">E</char>
+                <char left="1546" top="3072" right="1615" bottom="3171">L</char>
+                <char left="1646" top="3071" right="1715" bottom="3170">L</char>
+                <char left="1738" top="3066" right="1811" bottom="3165">&lt;</char>
+                <char left="1838" top="3069" right="1911" bottom="3164">&lt;</char>
+                <char left="1938" top="3068" right="2007" bottom="3167">A</char>
+                <char left="2034" top="3063" right="2107" bottom="3167">M</char>
+                <char left="2134" top="3066" right="2207" bottom="3166">B</char>
+                <char left="2238" top="3065" right="2303" bottom="3165">E</char>
+                <char left="2334" top="3064" right="2403" bottom="3164">R</char>
+                <char left="2430" top="3060" right="2503" bottom="3155">&lt;</char>
+                <char left="2530" top="3063" right="2603" bottom="3162">K</char>
+                <char left="2626" top="3062" right="2699" bottom="3161">A</char>
+                <char left="2726" top="3061" right="2795" bottom="3160">T</char>
+                <char left="2826" top="3060" right="2895" bottom="3159">H</char>
+                <char left="2926" top="3059" right="2991" bottom="3158">E</char>
+                <char left="3022" top="3058" right="3087" bottom="3157" suspicious="true">R</char>
+                <char left="3126" top="3057" right="3179" bottom="3157" suspicious="true">I</char>
+                <char left="3218" top="3056" right="3287" bottom="3156" suspicious="true">N</char>
+                <char left="3322" top="3059" right="3383" bottom="3155">E</char>
+                <char left="3414" top="3054" right="3487" bottom="3150">&lt;</char>
+                <char left="3510" top="3054" right="3583" bottom="3153">M</char>
+                <char left="3618" top="3057" right="3671" bottom="3156" suspicious="true">I</char>
+                <char left="3714" top="3052" right="3783" bottom="3155" suspicious="true">L</char>
+                <char left="3814" top="3055" right="3883" bottom="3154">L</char>
+                <char left="3910" top="3054" right="3975" bottom="3153">S</char>
+                <char left="4002" top="3049" right="4079" bottom="3144">&lt;</char>
+                <char left="4102" top="3052" right="4175" bottom="3147">&lt;</char>
+                <char left="4202" top="3051" right="4275" bottom="3146">&lt;</char>
+                <char left="4298" top="3050" right="4371" bottom="3146">&lt;</char>
+                <char left="4398" top="3049" right="4471" bottom="3145">&lt;</char>
+                <char left="4498" top="3048" right="4571" bottom="3144">&lt;</char>
+                <char left="4594" top="3052" right="4667" bottom="3143">&lt;</char>
+                <char left="4694" top="3047" right="4767" bottom="3142">&lt;</char>
+                <char left="4790" top="3050" right="4867" bottom="3141">&lt;</char>
+            </line>
+        </text>
+        <text id="address_line_03" left="480" top="3291" right="4935" bottom="3417">
+            <value>3058944252GBR9011159F1703098&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;04</value>
+            <line left="541" top="3317" right="4862" bottom="3393">
+                <char left="541" top="3321" right="614" bottom="3432">3</char>
+                <char left="641" top="3320" right="718" bottom="3431">0</char>
+                <char left="745" top="3319" right="810" bottom="3431" suspicious="true">5</char>
+                <char left="841" top="3318" right="918" bottom="3426" suspicious="true">8</char>
+                <char left="941" top="3317" right="1018" bottom="3425">9</char>
+                <char left="1041" top="3316" right="1118" bottom="3424">4</char>
+                <char left="1141" top="3315" right="1218" bottom="3423">4</char>
+                <char left="1245" top="3315" right="1314" bottom="3422" suspicious="true">2</char>
+                <char left="1345" top="3314" right="1410" bottom="3421" suspicious="true">5</char>
+                <char left="1445" top="3309" right="1510" bottom="3420" suspicious="true">2</char>
+                <char left="1541" top="3316" right="1614" bottom="3419" suspicious="true">G</char>
+                <char left="1641" top="3319" right="1714" bottom="3418">B</char>
+                <char left="1741" top="3318" right="1810" bottom="3417">R</char>
+                <char left="1837" top="3305" right="1910" bottom="3416">9</char>
+                <char left="1937" top="3304" right="2010" bottom="3415">0</char>
+                <char left="2045" top="3303" right="2090" bottom="3415" suspicious="true">1</char>
+                <char left="2145" top="3302" right="2190" bottom="3414" suspicious="true">1</char>
+                <char left="2241" top="3301" right="2286" bottom="3413" suspicious="true">1</char>
+                <char left="2337" top="3300" right="2398" bottom="3408" suspicious="true">5</char>
+                <char left="2429" top="3300" right="2502" bottom="3411" suspicious="true">9</char>
+                <char left="2541" top="3307" right="2594" bottom="3406" suspicious="true">F</char>
+                <char left="2637" top="3298" right="2682" bottom="3405" suspicious="true">1</char>
+                <char left="2725" top="3297" right="2798" bottom="3404" suspicious="true">7</char>
+                <char left="2821" top="3296" right="2898" bottom="3407">0</char>
+                <char left="2921" top="3295" right="2994" bottom="3406">3</char>
+                <char left="3021" top="3294" right="3094" bottom="3405">0</char>
+                <char left="3117" top="3293" right="3190" bottom="3405">9</char>
+                <char left="3217" top="3292" right="3290" bottom="3404">8</char>
+                <char left="3317" top="3299" right="3389" bottom="3399">&lt;</char>
+                <char left="3413" top="3298" right="3485" bottom="3394">&lt;</char>
+                <char left="3513" top="3298" right="3585" bottom="3393">&lt;</char>
+                <char left="3609" top="3297" right="3681" bottom="3392">&lt;</char>
+                <char left="3709" top="3296" right="3781" bottom="3395">&lt;</char>
+                <char left="3805" top="3299" right="3877" bottom="3394">&lt;</char>
+                <char left="3905" top="3298" right="3977" bottom="3393">&lt;</char>
+                <char left="4005" top="3297" right="4077" bottom="3392">&lt;</char>
+                <char left="4101" top="3292" right="4173" bottom="3391">&lt;</char>
+                <char left="4201" top="3295" right="4273" bottom="3391">&lt;</char>
+                <char left="4297" top="3294" right="4369" bottom="3390">&lt;</char>
+                <char left="4397" top="3293" right="4469" bottom="3389">&lt;</char>
+                <char left="4497" top="3292" right="4569" bottom="3388">&lt;</char>
+                <char left="4593" top="3292" right="4665" bottom="3387">&lt;</char>
+                <char left="4688" top="3283" right="4766" bottom="3394">0</char>
+                <char left="4789" top="3286" right="4862" bottom="3393">4</char>
+            </line>
+        </text>
+    </page>
+</document>

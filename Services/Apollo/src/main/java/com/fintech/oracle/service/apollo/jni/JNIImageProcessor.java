@@ -25,14 +25,14 @@ public class JNIImageProcessor {
     public native int InitializeConfigurationData(String documentCategory,String errorMsg); //load this first time
 
     public void initializeAgent() throws JobException {
-        /*String error = "";
+        String error = "";
         LOGGER.debug("loading library {} ", nativeLibraryLocation);
         System.load(nativeLibraryLocation);
         this.InitializeConfigurationData(configurationFilePath, error);
         if(!error.isEmpty()){
             LOGGER.error("Error occurred while initializing native library {} ", error);
             throw new JobException(error);
-        }*/
+        }
     }
 
     public ZvImage processImage(String documentCategory, ZvImage srcImage){

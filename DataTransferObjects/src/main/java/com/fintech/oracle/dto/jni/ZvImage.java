@@ -7,6 +7,8 @@ package com.fintech.oracle.dto.jni;
 public class ZvImage {
 
     private byte[] data;
+    private byte[] preProcessedImage;
+    private byte[] alignedImage;
     private String output;
     private String error;
 
@@ -32,6 +34,23 @@ public class ZvImage {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+
+    public byte[] getPreProcessedImage() {
+        return preProcessedImage;
+    }
+
+    public void setPreProcessedImage(byte[] preProcessedImage) {
+        this.preProcessedImage = preProcessedImage;
+    }
+
+    public byte[] getAlignedImage() {
+        return alignedImage;
+    }
+
+    public void setAlignedImage(byte[] alignedImage) {
+        this.alignedImage = alignedImage;
     }
 
     @Override

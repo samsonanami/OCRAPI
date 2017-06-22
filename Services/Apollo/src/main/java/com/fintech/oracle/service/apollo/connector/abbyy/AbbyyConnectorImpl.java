@@ -4,6 +4,7 @@ import com.fintech.oracle.service.apollo.connector.ConnectorType;
 import com.fintech.oracle.service.apollo.connector.abbyy.config.roi.factory.RoiConfigurationFileFactory;
 import com.fintech.oracle.service.apollo.connector.abbyy.config.roi.reader.RoiConfigurationReader;
 import com.fintech.oracle.service.apollo.connector.abbyy.task.Task;
+import com.fintech.oracle.service.apollo.connector.abbyy.task.TaskStatus;
 import com.fintech.oracle.service.apollo.connector.transmission.request.RequestBuilder;
 import com.fintech.oracle.service.apollo.connector.transmission.request.RequestBuilderFactory;
 import com.fintech.oracle.service.apollo.connector.transmission.submit.RequestSubmitter;
@@ -16,18 +17,23 @@ import com.mashape.unirest.request.BaseRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
  * Created by sasitha on 6/20/17.
  *
  */
+@Service
 public class AbbyyConnectorImpl implements AbbyyConnector {
     private static Logger LOGGER = LoggerFactory.getLogger(AbbyyConnectorImpl.class);
     private final int WAITING_TIME_TO_CHECK_TASK_COMPLETION = 2000;
@@ -48,7 +54,9 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
     }
 
     @Override
-    public Future<Task> submitForProcessing(byte[] image, Map<String, String> processingConfigurations) throws AbbyyConnectorException {
+    @Async
+    public CompletableFuture<Task> submitForProcessing(byte[] image, Map<String, String> processingConfigurations) throws AbbyyConnectorException {
+        LOGGER.info("Start submitting for processing ...");
         String result = "";
         Task task = new Task();
         RequestBuilder requestBuilder = requestBuilderFactory.getRequestBuilder(ConnectorType.ABBYY);
@@ -67,7 +75,9 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
             byte[] configurationFileData = readConfigurationFileData(configurationFilePath);
             String processingResults = submitTaskForProcessing(requestBuilder, task, configurationFileData);
             task = waitForTaskCompletion(requestBuilder, processingResults);
-            getResultsFromCompletedTask(requestBuilder, task);
+            if(task.getTaskStatus().equals(TaskStatus.Completed)){
+                getResultsFromCompletedTask(requestBuilder, task);
+            }
         } catch (FailedRequestException e) {
             throw new AbbyyConnectorException("Failed to send the request ", e);
         } catch (TaskParseException e) {
@@ -77,7 +87,8 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
         } catch (InterruptedException e) {
             throw new AbbyyConnectorException("Thread is interrupted while waiting for task to be completed", e);
         }
-        return new AsyncResult<>(task);
+        LOGGER.info("Done processing ....");
+        return CompletableFuture.completedFuture(task);
     }
 
     private String submitTaskForProcessing(RequestBuilder requestBuilder, Task task, byte[] configurationFileData) throws FailedRequestException {
