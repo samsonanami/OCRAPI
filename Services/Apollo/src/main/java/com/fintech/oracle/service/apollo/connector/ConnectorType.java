@@ -5,5 +5,5 @@ package com.fintech.oracle.service.apollo.connector;
  *
  */
 public enum ConnectorType {
-    ABBYY
+    ABBYY, LOCAL
 }

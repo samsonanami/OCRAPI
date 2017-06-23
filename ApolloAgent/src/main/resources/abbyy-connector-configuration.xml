@@ -16,7 +16,7 @@
 
 
     <util:map id="configurationFileMap" value-type="java.lang.String">
-        <entry key="DEFAULT" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/default-roi-configuration.xml"/>
+        <entry key="DEFAULT" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/Details_Extraction.xml"/>
     </util:map>
 
 
@@ -41,9 +41,44 @@
 
     <util:map id="ocrResultExtractorConfigurations" value-type="com.fintech.oracle.service.apollo.extractor.ResultExtractor">
         <entry key="ABBYY" value-ref="abbyResultExtractor"/>
+        <entry key="LOCAL" value-ref="localResultExtractor"/>
     </util:map>
 
-    <bean id="abbyResultExtractor" class="com.fintech.oracle.service.apollo.extractor.abbyy.AbbyyResultExtractor"/>
+    <bean id="abbyResultExtractor" class="com.fintech.oracle.service.apollo.extractor.abbyy.AbbyyResultExtractor">
+        <property name="roiNameListToDataExtractFromAbbyResult" ref="roiNameListToDataExtractFromAbbyResult"/>
+    </bean>
+    <bean id="localResultExtractor" class="com.fintech.oracle.service.apollo.extractor.local.LocalResultExtractor">
+        <property name="roiNameListToExtractResults" ref="roiNameListToExtractResults"/>
+    </bean>
 
     <bean id="resultExtractorFactory" class="com.fintech.oracle.service.apollo.extractor.factory.ResultExtractorFactory"/>
+
+
+    <util:list id="roiNameListToExtractResults" value-type="java.lang.String">
+        <value>TemplateName</value>
+    </util:list>
+
+    <util:list id="roiNameListToDataExtractFromAbbyResult" value-type="java.lang.String">
+        <value>surname</value>
+        <value>given_names</value>
+        <value>date_of_birth</value>
+        <value>place_of_birth</value>
+        <value>date_of_issue</value>
+        <value>issuing_authorithy</value>
+        <value>date_of_expiry</value>
+        <value>family_name</value>
+        <value>parents_given_name</value>
+        <value>sex</value>
+        <value>passport_number</value>
+        <value>nationality</value>
+        <value>place_of_issue</value>
+        <value>MRZ_line1</value>
+        <value>MRZ_line2</value>
+        <value>address_line1</value>
+        <value>address_line2</value>
+        <value>address_line3</value>
+        <value>name_in_utility_bill</value>
+        <value>utility_bill_document_name</value>
+        <value>utility_bill_date</value>
+    </util:list>
 </beans>

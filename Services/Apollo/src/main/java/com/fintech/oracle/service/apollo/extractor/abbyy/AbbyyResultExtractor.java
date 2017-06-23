@@ -9,17 +9,20 @@ import com.fintech.oracle.service.apollo.extractor.ResultExtractor;
 import com.fintech.oracle.service.apollo.transformer.abbyy.pojo.Document;
 import com.fintech.oracle.service.apollo.transformer.abbyy.pojo.Page;
 import com.fintech.oracle.service.apollo.transformer.abbyy.pojo.Text;
-import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by sasitha on 6/22/17.
  *
  */
 public class AbbyyResultExtractor implements ResultExtractor<Document> {
+
+    private List<String> roiNameListToDataExtractFromAbbyResult;
+
 
     @Autowired
     private ResourceNameOcrExtractionFieldRepository resourceNameOcrExtractionFieldRepository;
@@ -34,7 +37,7 @@ public class AbbyyResultExtractor implements ResultExtractor<Document> {
                 resourceNameOcrExtractionFieldRepository.findResourceNameOcrExtractionFieldsByResourceName(resourceName);
 
         List<OcrResult> ocrResultList = new ArrayList<>();
-        for (ResourceNameOcrExtractionField extractionField : resourceNameOcrExtractionFieldList){
+        for (ResourceNameOcrExtractionField extractionField : filterOcrExtractionFieldSet(resourceNameOcrExtractionFieldList)){
             String ocrExtractionField = extractionField.getOcrExtractionField().getField();
             String extractedValue = getExtractedFieldValue(document.getPage(), ocrExtractionField);
             ocrResultList.add(getOcrResultObject(ocrProcess, extractedValue,
@@ -64,5 +67,14 @@ public class AbbyyResultExtractor implements ResultExtractor<Document> {
             }
         }
         return value;
+    }
+
+    List<ResourceNameOcrExtractionField> filterOcrExtractionFieldSet(List<ResourceNameOcrExtractionField> fieldList){
+        return fieldList.stream()
+                .filter(r -> this.roiNameListToDataExtractFromAbbyResult.contains(r.getOcrExtractionField().getField())).collect(Collectors.toList());
+    }
+
+    public void setRoiNameListToDataExtractFromAbbyResult(List<String> roiNameListToDataExtractFromAbbyResult) {
+        this.roiNameListToDataExtractFromAbbyResult = roiNameListToDataExtractFromAbbyResult;
     }
 }

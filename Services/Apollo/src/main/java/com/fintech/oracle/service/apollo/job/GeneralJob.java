@@ -1,7 +1,6 @@
 package com.fintech.oracle.service.apollo.job;
 
 import com.fintech.oracle.dataabstraction.entities.*;
-import com.fintech.oracle.dataabstraction.entities.Resource;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameOcrExtractionFieldRepository;
 import com.fintech.oracle.dataabstraction.repository.ResourceNameRepository;
 import com.fintech.oracle.dto.jni.ZvImage;
@@ -27,7 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,6 +108,7 @@ public class GeneralJob {
 
                 if (resultImage.getError().isEmpty()){
                     processImagesWithAbby(jobMessage, process, resourceName, resultImage);
+                    processWithLocalOcr(process, resourceName, resultImage);
                 }else {
                     jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
                 }
@@ -122,6 +125,14 @@ public class GeneralJob {
             jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
             throw new JobException("Unable to get image data ", e);
         }
+    }
+
+    private void processWithLocalOcr(OcrProcess process, ResourceName resourceName,
+                                     ZvImage resultImage){
+        ResultExtractor<String> resultExtractor = resultExtractorFactory.getResultExtractor(ConnectorType.LOCAL);
+        List<OcrResult> ocrResultList = new ArrayList<>();
+        ocrResultList.addAll(resultExtractor.extractOcrResultSet(resultImage.getOutput(), process, resourceName, ""));
+        jobDetailService.saveOcrResults(ocrResultList);
     }
 
     private void processImagesWithAbby(ProcessingJobMessage jobMessage, OcrProcess process, ResourceName resourceName,
