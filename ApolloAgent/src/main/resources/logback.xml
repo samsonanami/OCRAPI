@@ -33,6 +33,7 @@
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.apache.http.wire" level="WARN"/>
+    <logger name="org.apache.http.impl.conn.PoolingHttpClientConnectionManager" level="WARN"/>
 
 
     <root level="debug">

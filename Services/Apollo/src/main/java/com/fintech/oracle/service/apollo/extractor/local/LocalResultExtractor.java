@@ -53,7 +53,7 @@ public class LocalResultExtractor implements ResultExtractor<String> {
             .filter(r -> this.roiNameListToExtractResults.contains(r.getOcrExtractionField().getField())).collect(Collectors.toList());
     }
 
-    public String getExtractedFieldValue(String fieldValueConfidenceString){
+    private String getExtractedFieldValue(String fieldValueConfidenceString){
         String pattern = "##(.*?)##";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(fieldValueConfidenceString.trim());
@@ -65,7 +65,7 @@ public class LocalResultExtractor implements ResultExtractor<String> {
         return result;
     }
 
-    public String getExtractedFieldOcrConfidence(String fieldValueConfidenceString){
+    private String getExtractedFieldOcrConfidence(String fieldValueConfidenceString){
         String pattern = "##([0-9]+\\.?[0-9]+)%%";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(fieldValueConfidenceString.trim());
@@ -78,7 +78,7 @@ public class LocalResultExtractor implements ResultExtractor<String> {
         return result;
     }
 
-    public String getFieldValueConfidenceFromResultString(String resultString, String field){
+    private String getFieldValueConfidenceFromResultString(String resultString, String field){
         String pattern = "(?i)%%("+ field.replace("_", " ") +")(.*?)%%";
 
         Pattern r = Pattern.compile(pattern);

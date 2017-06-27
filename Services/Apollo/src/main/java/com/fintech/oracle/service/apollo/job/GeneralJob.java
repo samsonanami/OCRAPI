@@ -105,10 +105,14 @@ public class GeneralJob {
                 ZvImage resultImage = jniImageProcessor.processImage(resourceConfigurationName,
                         getSourceImage(jobMessage));
                 saveProcessedImages(jobMessage, resultImage);
-
+                List<OcrResult> ocrResultList = new ArrayList<>();
                 if (resultImage.getError().isEmpty()){
-                    processImagesWithAbby(jobMessage, process, resourceName, resultImage);
-                    processWithLocalOcr(process, resourceName, resultImage);
+                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage));
+                    String templateName = getTemplateName(ocrResultList, "TemplateName");
+                    ocrResultList.addAll(
+                            processImagesWithAbby(jobMessage, process, resourceName,
+                                    resultImage, templateName));
+                    jobDetailService.saveOcrResults(ocrResultList);
                 }else {
                     jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
                 }
@@ -127,16 +131,28 @@ public class GeneralJob {
         }
     }
 
-    private void processWithLocalOcr(OcrProcess process, ResourceName resourceName,
+    private String getTemplateName(List<OcrResult> ocrResultList, String ocrExtractionFieldName) {
+
+        OcrResult templateNameOcrResult = new OcrResult();
+        for (OcrResult ocrResult : ocrResultList){
+            if (ocrResult.getResourceNameOcrExtractionField().getOcrExtractionField().getField().equals(ocrExtractionFieldName)){
+                templateNameOcrResult = ocrResult;
+            }
+        }
+
+        return templateNameOcrResult.getValue();
+    }
+
+    private List<OcrResult> processWithLocalOcr(OcrProcess process, ResourceName resourceName,
                                      ZvImage resultImage){
         ResultExtractor<String> resultExtractor = resultExtractorFactory.getResultExtractor(ConnectorType.LOCAL);
         List<OcrResult> ocrResultList = new ArrayList<>();
         ocrResultList.addAll(resultExtractor.extractOcrResultSet(resultImage.getOutput(), process, resourceName, ""));
-        jobDetailService.saveOcrResults(ocrResultList);
+        return ocrResultList;
     }
 
-    private void processImagesWithAbby(ProcessingJobMessage jobMessage, OcrProcess process, ResourceName resourceName,
-                                       ZvImage resultImage) throws ConnectorException, JobException {
+    private List<OcrResult> processImagesWithAbby(ProcessingJobMessage jobMessage, OcrProcess process, ResourceName resourceName,
+                                       ZvImage resultImage, String templateName) throws ConnectorException, JobException {
         Map<String,String> connectorConfigurations = new HashMap<>();
         connectorConfigurations.putAll(abbyyCloudAPIConfigurations);
         Connector<Task> abbyConnector =  connectorFactory.getConnector(ConnectorType.ABBYY);
@@ -144,38 +160,43 @@ public class GeneralJob {
 
         Map<String, String> processingConfiguration = new HashMap<>();
         processingConfiguration.put("fileName", jobMessage.getResourceId()+".jpg");
+        processingConfiguration.put("templateName", templateName);
         CompletableFuture<Task> abbyResultForNonPreProcessedImage =
-                abbyConnector.submitForProcessing(resultImage.getPreProcessedImage(),
+                abbyConnector.submitForProcessing(resultImage.getAlignedImage(),
                         processingConfiguration);
         CompletableFuture<Task> abbyyResultsForPreProcessedImage = abbyConnector.submitForProcessing(
                 resultImage.getPreProcessedImage(), processingConfiguration
         );
         CompletableFuture.allOf(abbyResultForNonPreProcessedImage,abbyyResultsForPreProcessedImage).join();
+        List<OcrResult> ocrResultList = new ArrayList<>();
         try {
             LOGGER.info("Completed processing task : {} ", abbyResultForNonPreProcessedImage.get());
 
             ResultTransformer<Document, String> resultTransformer =
                     resultTransformerFactory.getResultTransformer(ConnectorType.ABBYY);
 
-            List<OcrResult> ocrResultList = new ArrayList<>();
+
             ResultExtractor<Document> abbyOcrResultExtractor =
                     resultExtractorFactory.getResultExtractor(ConnectorType.ABBYY);
             if(abbyResultForNonPreProcessedImage.get().getResultString() != null){
-                Document nonePreProcesseImageResults =
+                Document nonePreProcessedImageResults =
                         resultTransformer.transformResults(
                                 abbyResultForNonPreProcessedImage.get().getResultString());
-                LOGGER.info("none pre processed result document {}", nonePreProcesseImageResults);
-                ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(nonePreProcesseImageResults,
+                LOGGER.info("none pre processed result document {}", nonePreProcessedImageResults);
+                saveAbbyResultXmlFiles(abbyResultForNonPreProcessedImage.get().getResultString(),
+                        "none-pre-processed", jobMessage);
+                ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(nonePreProcessedImageResults,
                         process, resourceName, "NPP"));
             }
             if(abbyyResultsForPreProcessedImage.get().getResultString() != null){
                 Document preProcesseImageResults = resultTransformer.transformResults(
                         abbyyResultsForPreProcessedImage.get().getResultString());
                 LOGGER.info("pre processed result document {}", preProcesseImageResults);
+                saveAbbyResultXmlFiles(abbyyResultsForPreProcessedImage.get().getResultString(),
+                        "pre-processed", jobMessage);
                 ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(preProcesseImageResults,
                         process, resourceName, "PP"));
             }
-            jobDetailService.saveOcrResults(ocrResultList);
             if (abbyyResultsForPreProcessedImage.get().getResultString() == null &&
                     abbyResultForNonPreProcessedImage.get().getResultString() == null ){
                 jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
@@ -185,8 +206,24 @@ public class GeneralJob {
         } catch (InterruptedException | ExecutionException e) {
             throw new JobException("Error while processing resource ", e);
         }
+        return ocrResultList;
     }
 
+    private void saveAbbyResultXmlFiles(String resultString, String fileName, ProcessingJobMessage jobMessage){
+        boolean saveResultXmlFiles = Boolean.parseBoolean(System.getProperty("saveAbbyXmlFiles"));
+        String xmlSavingBasePath = System.getProperty("xmlSavingBasePath");
+
+        if(saveResultXmlFiles && xmlSavingBasePath != null){
+            String xmlFileLocation = xmlSavingBasePath + "/" + jobMessage.getOcrProcessId()+ "/" + jobMessage.getResourceId() + "-" + fileName + ".xml";
+            File xmlFile = new File(xmlFileLocation);
+            xmlFile.getParentFile().mkdirs();
+            try(FileOutputStream xmlFileOutputStream = new FileOutputStream(xmlFile)){
+                xmlFileOutputStream.write(resultString.getBytes());
+            }catch (IOException ex){
+                LOGGER.warn("Unable to save xml result files to the system ", ex);
+            }
+        }
+    }
     private void saveProcessedImages(ProcessingJobMessage jobMessage, ZvImage resultImage){
         boolean saveProcessedImages = Boolean.parseBoolean(System.getProperty("saveProcessedImages"));
         String processedImageSavingBasePath = System.getProperty("processImageSavingPath");
@@ -214,7 +251,7 @@ public class GeneralJob {
         }
     }
 
-    public  void saveJsonDetails(JSONObject json, OcrProcess ocrProcess, ResourceName resourceName)
+    private void saveJsonDetails(JSONObject json, OcrProcess ocrProcess, ResourceName resourceName)
             throws ConfigurationDataNotFoundException {
         List<ResourceNameOcrExtractionField> resourceNameOcrExtractionFieldList =
                 resourceNameOcrExtractionFieldRepository.findResourceNameOcrExtractionFieldsByResourceName(resourceName);
@@ -246,7 +283,7 @@ public class GeneralJob {
         jobDetailService.saveOcrResults(ocrResultList);
     }
 
-    public ZvImage getSourceImage(ProcessingJobMessage resource) throws IOException {
+    private ZvImage getSourceImage(ProcessingJobMessage resource) throws IOException {
         ZvImage zvImage = new ZvImage();
         zvImage.setError("");
         zvImage.setOutput("");
@@ -256,4 +293,5 @@ public class GeneralJob {
         zvImage.setData(resource.getImageData());
         return zvImage;
     }
+
 }

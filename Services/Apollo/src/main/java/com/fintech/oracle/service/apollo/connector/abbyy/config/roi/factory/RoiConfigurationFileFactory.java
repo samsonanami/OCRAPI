@@ -1,5 +1,6 @@
 package com.fintech.oracle.service.apollo.connector.abbyy.config.roi.factory;
 
+import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -16,7 +17,11 @@ public class RoiConfigurationFileFactory {
     Map<String,String> configurationFileMap;
 
 
-    public String getConfigurationFilePath(String templateName){
-        return configurationFileMap.get(templateName);
+    public String getConfigurationFilePath(String templateName) throws ConfigurationDataNotFoundException {
+        String configurationFilePath = configurationFileMap.get(templateName);
+        if (configurationFilePath == null){
+            throw new ConfigurationDataNotFoundException("No ROI Configuration file was found for template name : " + templateName);
+        }
+        return configurationFilePath;
     }
 }

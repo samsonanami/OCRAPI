@@ -17,6 +17,9 @@
 
     <util:map id="configurationFileMap" value-type="java.lang.String">
         <entry key="DEFAULT" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/Details_Extraction.xml"/>
+        <entry key="DLF_UK2" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/Details_Extraction.xml"/>
+        <entry key="P_UK1" value="/media/sasitha/Projects/Orion/Code/OCRAPI/config/Images_Repo/Train_Images/Passport/UK1/src/Details_Extraction.xml"/>
+        <entry key="P_UK2" value="/media/sasitha/Projects/Orion/Code/OCRAPI/config/Images_Repo/Train_Images/Passport/UK2/src/Details_Extraction.xml"/>
     </util:map>
 
 

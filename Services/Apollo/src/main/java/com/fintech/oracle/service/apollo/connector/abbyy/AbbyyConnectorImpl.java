@@ -12,13 +12,13 @@ import com.fintech.oracle.service.apollo.exception.config.ConfigurationFileReade
 import com.fintech.oracle.service.apollo.exception.connector.abbyy.AbbyyConnectorException;
 import com.fintech.oracle.service.apollo.exception.request.FailedRequestException;
 import com.fintech.oracle.service.apollo.exception.task.TaskParseException;
+import com.fintech.oracle.service.common.exception.ConfigurationDataNotFoundException;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.request.BaseRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,8 +26,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by sasitha on 6/20/17.
@@ -35,8 +33,9 @@ import java.util.concurrent.Future;
  */
 @Service
 public class AbbyyConnectorImpl implements AbbyyConnector {
-    private static Logger LOGGER = LoggerFactory.getLogger(AbbyyConnectorImpl.class);
-    private final int WAITING_TIME_TO_CHECK_TASK_COMPLETION = 2000;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbbyyConnectorImpl.class);
+
+    private static final  String BASE_URL_CONFIGURATION_KEY = "baseUrl";
     @Autowired
     private RequestBuilderFactory requestBuilderFactory;
 
@@ -47,6 +46,7 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
     private RoiConfigurationFileFactory roiConfigurationFileFactory;
 
 
+    private int waitingTimeToCheckTaskCompletion = 2000;
     private Map<String, String> connectorConfigurations;
     @Override
     public void setConfigurations(Map<String, String> configurations) {
@@ -60,18 +60,18 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
         String result = "";
         Task task = new Task();
         RequestBuilder requestBuilder = requestBuilderFactory.getRequestBuilder(ConnectorType.ABBYY);
-        Map<String, Object> fileUploadContent = new HashMap<String,Object>();
+        Map<String, Object> fileUploadContent = new HashMap<>();
         fileUploadContent.putAll(processingConfigurations);
         fileUploadContent.put("fileData", image);
         fileUploadContent.put("content-type", "application/octet-stream");
-        connectorConfigurations.put("url",connectorConfigurations.get("baseUrl") + "/submitImage");
+        connectorConfigurations.put("url",connectorConfigurations.get(BASE_URL_CONFIGURATION_KEY) + "/submitImage");
         connectorConfigurations.put("authorization", getAuthorizationHeader());
         BaseRequest imageUploadRequest = requestBuilder.buildPostRequest(connectorConfigurations,fileUploadContent);
         try {
             HttpResponse<String> imageUploadResponse = requestSubmitter.submitRequest(imageUploadRequest);
             result = imageUploadResponse.getBody();
             task = Task.parseTask(result);
-            String configurationFilePath = roiConfigurationFileFactory.getConfigurationFilePath("DEFAULT");
+            String configurationFilePath = roiConfigurationFileFactory.getConfigurationFilePath(processingConfigurations.get("templateName"));
             byte[] configurationFileData = readConfigurationFileData(configurationFilePath);
             String processingResults = submitTaskForProcessing(requestBuilder, task, configurationFileData);
             task = waitForTaskCompletion(requestBuilder, processingResults);
@@ -85,7 +85,10 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
         } catch (ConfigurationFileReaderException | IOException e) {
             throw new AbbyyConnectorException("Unable to read configuration file with ROI details", e);
         } catch (InterruptedException e) {
-            throw new AbbyyConnectorException("Thread is interrupted while waiting for task to be completed", e);
+            LOGGER.error("Thread was inturrupted while waiting for abbyy to complete the processing", e);
+            Thread.currentThread().interrupt();
+        } catch (ConfigurationDataNotFoundException e) {
+            throw new AbbyyConnectorException("No suitable ROI configuration found ", e);
         }
         LOGGER.info("Done processing ....");
         return CompletableFuture.completedFuture(task);
@@ -97,7 +100,7 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
         processingRequestContent.put("fileName", "default-roi-configuration.xml");
         processingRequestContent.put("content-type", "application/octet-stream");
 
-        connectorConfigurations.put("url",connectorConfigurations.get("baseUrl") + "/processFields?taskId="+task.getTaskId());
+        connectorConfigurations.put("url",connectorConfigurations.get(BASE_URL_CONFIGURATION_KEY) + "/processFields?taskId="+task.getTaskId());
 
         BaseRequest processingRequest = requestBuilder.buildPostRequest(connectorConfigurations, processingRequestContent);
 
@@ -121,8 +124,8 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
         Task task;
         task = Task.parseTask(processingResults);
         while (task.isTaskActive()){
-            Thread.sleep(WAITING_TIME_TO_CHECK_TASK_COMPLETION);
-            connectorConfigurations.put("url",connectorConfigurations.get("baseUrl") + "/getTaskStatus?taskId="+task.getTaskId());
+            Thread.sleep(waitingTimeToCheckTaskCompletion);
+            connectorConfigurations.put("url",connectorConfigurations.get(BASE_URL_CONFIGURATION_KEY) + "/getTaskStatus?taskId="+task.getTaskId());
 
             BaseRequest statusCheckRequest = requestBuilder.buildGetRequest(connectorConfigurations, null);
             HttpResponse<String> statusResponse = requestSubmitter.submitRequest(statusCheckRequest);

@@ -12,5 +12,6 @@ import java.util.List;
  */
 public interface ResultExtractor<E>{
 
-    List<OcrResult> extractOcrResultSet(E inputObject, OcrProcess ocrProcess, ResourceName resourceName, String preProcessedStatus);
+    List<OcrResult> extractOcrResultSet(E inputObject, OcrProcess ocrProcess, ResourceName resourceName,
+                                        String preProcessedStatus);
 }
