@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Beautifyconverter.com Yaml To HTML Converter</title>
+</head>
+
+<body>
+<table>
+    <tr>
+        <td>swagger</td>
+        <td>info.version</td>
+        <td>info.title</td>
+        <td>info.description</td>
+        <td>info.contact.name</td>
+        <td>host</td>
+        <td>basePath</td>
+        <td>schemes.0</td>
+        <td>paths./verification.post.summary</td>
+        <td>paths./verification.post.description</td>
+        <td>paths./verification.post.operationId</td>
+        <td>paths./verification.post.consumes.0</td>
+        <td>paths./verification.post.produces.0</td>
+        <td>paths./verification.post.parameters.0.in</td>
+        <td>paths./verification.post.parameters.0.name</td>
+        <td>paths./verification.post.parameters.0.description</td>
+        <td>paths./verification.post.parameters.0.required</td>
+        <td>paths./verification.post.parameters.0.schema.$ref</td>
+        <td>paths./verification.post.responses.200.description</td>
+        <td>paths./verification.post.responses.200.schema.title</td>
+        <td>paths./verification.post.responses.200.schema.type</td>
+        <td>paths./verification.post.responses.200.schema.items.title</td>
+        <td>paths./verification.post.responses.200.schema.items.type</td>
+        <td>paths./verification.post.responses.200.schema.items.properties.verificationProcessId.type</td>
+        <td>paths./verification.post.responses.400.description</td>
+        <td>paths./verification.post.responses.400.schema.$ref</td>
+        <td>paths./verification.post.responses.401.description</td>
+        <td>paths./verification.post.responses.401.schema.$ref</td>
+        <td>paths./verification.post.responses.404.description</td>
+        <td>paths./verification.post.responses.404.schema.$ref</td>
+        <td>paths./verification/{verificationId}.get.summary</td>
+        <td>paths./verification/{verificationId}.get.description</td>
+        <td>paths./verification/{verificationId}.get.operationId</td>
+        <td>paths./verification/{verificationId}.get.produces.0</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.in</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.name</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.description</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.required</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.type</td>
+        <td>paths./verification/{verificationId}.get.parameters.0.format</td>
+        <td>paths./verification/{verificationId}.get.responses.200.description</td>
+        <td>paths./verification/{verificationId}.get.responses.200.schema.$ref</td>
+        <td>paths./verification/{verificationId}.get.responses.400.description</td>
+        <td>paths./verification/{verificationId}.get.responses.400.schema.$ref</td>
+        <td>paths./verification/{verificationId}.get.responses.401.description</td>
+        <td>paths./verification/{verificationId}.get.responses.401.schema.$ref</td>
+        <td>paths./verification/{verificationId}.get.responses.404.description</td>
+        <td>paths./verification/{verificationId}.get.responses.404.schema.$ref</td>
+        <td>definitions.Resource.type</td>
+        <td>definitions.Resource.properties.resourceId.type</td>
+        <td>definitions.Resource.properties.resourceName.type</td>
+        <td>definitions.VerificationProcess.type</td>
+        <td>definitions.VerificationProcess.properties.verificationProcessType.type</td>
+        <td>definitions.VerificationProcess.properties.resources.type</td>
+        <td>definitions.VerificationProcess.properties.resources.items.$ref</td>
+        <td>definitions.VerificationRequest.type</td>
+        <td>definitions.VerificationRequest.properties.verificationProcesses.type</td>
+        <td>definitions.VerificationRequest.properties.verificationProcesses.items.$ref</td>
+        <td>definitions.OcrFieldValue.type</td>
+        <td>definitions.OcrFieldValue.properties.id.type</td>
+        <td>definitions.OcrFieldValue.properties.value.type</td>
+        <td>definitions.OcrFieldValue.properties.confidence.type</td>
+        <td>definitions.OcrFieldData.type</td>
+        <td>definitions.OcrFieldData.properties.id.type</td>
+        <td>definitions.OcrFieldData.properties.value.type</td>
+        <td>definitions.OcrFieldData.properties.value.items.$ref</td>
+        <td>definitions.Response.type</td>
+        <td>definitions.Response.properties.status.type</td>
+        <td>definitions.Response.properties.message.type</td>
+    </tr>
+    <tr>
+        <td>2.0</td>
+        <td>0.0.1</td>
+        <td>OCR API</td>
+        <td>"This is IDAPI api spec definition.</td>
+    </tr>
+    <tr>
+        <td>"</td>
+        <td>sasithag@zone24x7.com</td>
+        <td>api.selified.com</td>
+        <td>/orion/v1</td>
+        <td>https</td>
+        <td>Submit new processing request</td>
+        <td>"This API request allows users to submit new processing requests to OCR API.</td>
+    </tr>
+    <tr>
+        <td>A processing request may have one ore more verification process included in it. </td>
+    </tr>
+    <tr>
+        <td>A verification process need to have resources. Resources are the content which </td>
+    </tr>
+    <tr>
+        <td>will go through the verification porcess.</td>
+    </tr>
+    <tr>
+        <td>"</td>
+        <td>addVerification</td>
+        <td>application/json</td>
+        <td>application/json</td>
+        <td>body</td>
+        <td>body</td>
+        <td>Verification request</td>
+        <td>true</td>
+        <td>#/definitions/VerificationRequest</td>
+        <td>Successful response</td>
+        <td>VerificationProcessId</td>
+        <td>object</td>
+        <td>Vefication process response</td>
+        <td>object</td>
+        <td>string</td>
+        <td>Invalid json structure.</td>
+        <td>#/definitions/Response</td>
+        <td>Unauthorized to acess the service.</td>
+        <td>#/definitions/Response</td>
+        <td>One ore more resources could not found</td>
+        <td>#/definitions/Response</td>
+        <td>Get details of a processing request.</td>
+        <td>"This API call allows users to get the status and the details regarding a processing</td>
+    </tr>
+    <tr>
+        <td>request they have earlier submitted.</td>
+    </tr>
+    <tr>
+        <td>"</td>
+        <td>getByVerificationId</td>
+        <td>application/json</td>
+        <td>path</td>
+        <td>verificationId</td>
+        <td>id of the verification request data need to be fetched.</td>
+        <td>true</td>
+        <td>string</td>
+        <td>int64</td>
+        <td>successful operation</td>
+        <td>#/definitions/OcrFieldData</td>
+        <td>No ID or invalid id submitted</td>
+        <td>#/definitions/OcrFieldData</td>
+        <td>Not authorized to access</td>
+        <td>#/definitions/OcrFieldData</td>
+        <td>Requested verification request not fond</td>
+        <td>#/definitions/Response</td>
+        <td>object</td>
+        <td>string</td>
+        <td>string</td>
+        <td>object</td>
+        <td>string</td>
+        <td>array</td>
+        <td>#/definitions/Resource</td>
+        <td>object</td>
+        <td>array</td>
+        <td>#/definitions/VerificationProcess</td>
+        <td>object</td>
+        <td>string</td>
+        <td>string</td>
+        <td>integer</td>
+        <td>object</td>
+        <td>string</td>
+        <td>array</td>
+        <td>#/definitions/OcrFieldValue</td>
+        <td>object</td>
+        <td>integer</td>
+        <td>string</td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+</table>
+</body>
+
+</html>
