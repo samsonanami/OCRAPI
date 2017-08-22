@@ -17,19 +17,43 @@
 
     <util:map id="configurationFileMap" value-type="java.lang.String">
         <entry key="DEFAULT" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/Details_Extraction.xml"/>
-        <entry key="DLF_UK2" value="/media/sasitha/Projects/Orion/Code/OCRAPI/ApolloAgent/src/main/resources/Details_Extraction.xml"/>
-        <entry key="P_UK1" value="/media/sasitha/Projects/Orion/Code/OCRAPI/config/Images_Repo/Train_Images/Passport/UK1/src/Details_Extraction.xml"/>
-        <entry key="P_UK2" value="/media/sasitha/Projects/Orion/Code/OCRAPI/config/Images_Repo/Train_Images/Passport/UK2/src/Details_Extraction.xml"/>
+        <entry key="DLF_Ireland" value="Driving_License_Front/DLF_Ireland/src/Details_Extraction.xml"/>
+        <entry key="DLF_UK" value="Driving_License_Front/DLF_UK/src/Details_Extraction.xml"/>
+        <entry key="DLF_UK3" value="Driving_License_Front/DLF_UK3/src/Details_Extraction.xml"/>
+        <entry key="PP_India" value="Passport/PP_India/src/Details_Extraction.xml"/>
+        <entry key="PP_Ireland" value="Passport/PP_Ireland/src/Details_Extraction.xml"/>
+        <entry key="PP_Ireland2" value="Passport/PP_Ireland2/src/Details_Extraction.xml"/>
+        <entry key="PP_UK1" value="Passport/PP_UK1/src/Details_Extraction.xml"/>
+        <entry key="PP_UK2" value="Passport/PP_UK2/src/Details_Extraction.xml"/>
+        <entry key="PP_UK2" value="Passport/PP_UK3/src/Details_Extraction.xml"/>
+        <entry key="UB_Barkleys" value="Utility_Bill/UB_Barkleys/src/Details_Extraction.xml"/>
+        <entry key="UB_EBS_Savings_Document" value="Utility_Bill/UB_EBS_Savings_Document/src/Details_Extraction.xml"/>
+        <entry key="UB_EDF_Energy" value="Utility_Bill/UB_EDF_Energy/src/Details_Extraction.xml"/>
+        <entry key="UB_Electricity_Bill_Sainsbury" value="Utility_Bill/UB_Electricity_Bill_Sainsbury/src/Details_Extraction.xml"/>
+        <entry key="UB_Electricity_Bill_Southern" value="Utility_Bill/UB_Electricity_Bill_Southern/src/Details_Extraction.xml"/>
+        <entry key="UB_Electricty_Bill_Attantic" value="Utility_Bill/UB_Electricty_Bill_Attantic/src/Details_Extraction.xml"/>
+        <entry key="UB_EVO_Energy" value="Utility_Bill/UB_EVO_Energy/src/Details_Extraction.xml"/>
+        <entry key="UB_Gas_Statement_BritishGas" value="Utility_Bill/UB_Gas_Statement_BritishGas/src/Details_Extraction.xml"/>
+        <entry key="UB_Gas_Statement_EDF" value="Utility_Bill/UB_Gas_Statement_EDF/src/Details_Extraction.xml"/>
+        <entry key="UB_Gas_Statement_Southern" value="Utility_Bill/UB_Gas_Statement_Southern/src/Details_Extraction.xml"/>
+        <entry key="UB_thames_water" value="Utility_Bill/UB_thames_water/src/Details_Extraction.xml"/>
+        <entry key="UB_UnitedUtilities" value="Utility_Bill/UB_UnitedUtilities/src/Details_Extraction.xml"/>
+        <entry key="UB_Utility_warehouse_T1" value="Utility_Bill/UB_Utility_warehouse_T1/src/Details_Extraction.xml"/>
+        <entry key="UB_Utility_warehouse_T1" value="Utility_Bill/UB_Utility_warehouse_T1/src/Details_Extraction.xml"/>
+        <entry key="UB_virgin_t1" value="Utility_Bill/UB_virgin_t1/src/Details_Extraction.xml"/>
+        <entry key="UB_Water_Bill_Yorkshire" value="Utility_Bill/UB_Water_Bill_Yorkshire/src/Details_Extraction.xml"/>
     </util:map>
 
-
+    <bean id="roiConfigurationBasePath" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="/media/sasitha/Projects/Orion/Code/DocumentDataExtractor/Images_Repo/Train_Images"/>
+    </bean>
     <bean id="roiConfigurationFileFactory" class="com.fintech.oracle.service.apollo.connector.abbyy.config.roi.factory.RoiConfigurationFileFactory"/>
 
 
     <util:map id="abbyyCloudAPIConfigurations" value-type="java.lang.String">
         <entry key="baseUrl" value="http://cloud.ocrsdk.com"/>
-        <entry key="appId" value="orion-web"/>
-        <entry key="password" value="ucq88XOEa66emy3e427l3oPW"/>
+        <entry key="appId" value="web-ocr-lk"/>
+        <entry key="password" value="kbZHZDO9DXt61V9OYB/JNHqB"/>
     </util:map>
 
 
@@ -59,6 +83,7 @@
 
     <util:list id="roiNameListToExtractResults" value-type="java.lang.String">
         <value>TemplateName</value>
+        <value>processing_failure</value>
     </util:list>
 
     <util:list id="roiNameListToDataExtractFromAbbyResult" value-type="java.lang.String">

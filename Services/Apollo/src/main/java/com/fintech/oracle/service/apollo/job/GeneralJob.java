@@ -13,6 +13,7 @@ import com.fintech.oracle.service.apollo.exception.JobException;
 import com.fintech.oracle.service.apollo.exception.connector.ConnectorException;
 import com.fintech.oracle.service.apollo.extractor.ResultExtractor;
 import com.fintech.oracle.service.apollo.extractor.factory.ResultExtractorFactory;
+import com.fintech.oracle.service.apollo.extractor.local.LocalResultExtractor;
 import com.fintech.oracle.service.apollo.jni.JNIImageProcessor;
 import com.fintech.oracle.service.apollo.transformer.ResultTransformer;
 import com.fintech.oracle.service.apollo.transformer.abbyy.pojo.Document;
@@ -36,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by sasitha on 12/22/16.
@@ -68,6 +71,9 @@ public class GeneralJob {
 
     @Autowired
     private ResultExtractorFactory resultExtractorFactory;
+
+    @Autowired
+    private LocalResultExtractor localResultExtractor;
 
     @javax.annotation.Resource(name = "abbyyCloudAPIConfigurations")
     private Map<String,String>  abbyyCloudAPIConfigurations;
@@ -107,13 +113,17 @@ public class GeneralJob {
                 saveProcessedImages(jobMessage, resultImage);
                 List<OcrResult> ocrResultList = new ArrayList<>();
                 if (resultImage.getError().isEmpty()){
-                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage));
+                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getOutput()));
                     String templateName = getTemplateName(ocrResultList, "TemplateName");
                     ocrResultList.addAll(
                             processImagesWithAbby(jobMessage, process, resourceName,
                                     resultImage, templateName));
                     jobDetailService.saveOcrResults(ocrResultList);
                 }else {
+                    List<OcrResult> errorResults = processWithLocalOcr(process, resourceName, resultImage.getError());
+                    jobDetailService.saveOcrResults(errorResults);
+                    LOGGER.warn("Received error from native library '{}' when processing image belongs to " +
+                            "image category {} in ocr process with id {}",resultImage.getError(), resourceName.getName(), process.getId());
                     jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
                 }
             }
@@ -144,10 +154,10 @@ public class GeneralJob {
     }
 
     private List<OcrResult> processWithLocalOcr(OcrProcess process, ResourceName resourceName,
-                                     ZvImage resultImage){
+                                     String resultString){
         ResultExtractor<String> resultExtractor = resultExtractorFactory.getResultExtractor(ConnectorType.LOCAL);
         List<OcrResult> ocrResultList = new ArrayList<>();
-        ocrResultList.addAll(resultExtractor.extractOcrResultSet(resultImage.getOutput(), process, resourceName, ""));
+        ocrResultList.addAll(resultExtractor.extractOcrResultSet(resultString, process, resourceName, ""));
         return ocrResultList;
     }
 

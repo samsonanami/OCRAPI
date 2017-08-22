@@ -3,6 +3,21 @@ Oracle - Changelog
 
 Unreleased
 ----------
+(2017-06-27 11:05:44 +0530	) roi configurations detecting based on template name extracted from local image processing
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-23 17:34:00 +0530	) implemented local result extractor
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-23 12:38:32 +0530	) updating ocr process status
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-23 00:08:03 +0530	) Saving abbyy results in to the database
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
+(2017-06-22 10:54:40 +0530	) ABBYY connector implementation.
+ 
+ (Sasitha Gunadasa)(sasithag@zone24x7.com)
 (2017-06-20 11:23:55 +0530	) Merge branch 'handle_empty_ocr_extraction_values' into 'develop'
  Handle empty ocr extraction values
 

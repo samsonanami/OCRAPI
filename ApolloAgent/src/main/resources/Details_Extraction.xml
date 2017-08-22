@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<document xmlns="http://ocrsdk.com/schema/taskDescription-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ocrsdk.com/schema/taskDescription-1.0.xsd http://ocrsdk.com/schema/taskDescription-1.0.xsd">
+    <fieldTemplates>
+        <text id="textField" left="0" top="0" right="0" bottom="0">
+            <language>English</language>
+            <textType>matrix</textType>
+            <oneTextLine>true</oneTextLine>
+        </text>
+    </fieldTemplates>
+    <page applyTo="0">
+        <text template="textField" id="MRZ_line1" left="388" top="291" right="703" bottom="327">
+            <language>English</language>
+        </text>
+        <text template="textField" id="surname" left="341" top="75" right="954" bottom="115">
+            <language>English</language>
+        </text>
+        <text template="textField" id="given_names" left="346" top="113" right="962" bottom="152">
+            <language>English</language>
+        </text>
+        <text template="textField" id="date_of_birth" left="344" top="181" right="514" bottom="224">
+            <language>English</language>
+        </text>
+        <text template="textField" id="place_of_birth" left="511" top="181" right="825" bottom="221">
+            <language>English</language>
+        </text>
+        <text template="textField" id="date_of_issue" left="346" top="220" right="517" bottom="255">
+            <language>English</language>
+        </text>
+        <text template="textField" id="address_line1" left="350" top="419" right="1024" bottom="459">
+            <language>English</language>
+        </text>
+        <text template="textField" id="address_line2" left="356" top="455" right="1025" bottom="493">
+            <language>English</language>
+        </text>
+        <text template="textField" id="issuing_authorithy" left="563" top="218" right="819" bottom="258">
+            <language>English</language>
+        </text>
+        <text template="textField" id="date_of_expiry" left="346" top="256" right="531" bottom="292">
+            <language>English</language>
+        </text>
+    </page>
+</document>

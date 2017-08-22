@@ -1,42 +1,65 @@
 #!/bin/bash
+declare -A opt_spec
+unset instance
+unset version
+unset native
+unset user
+unset path
+opt_spec=(
+  [instance:]='instance'
+  [version:]='version'
+  [native:]='native'
+  [user:]='user'
+  [path:]='path'
+)
+parsed_opts=$(
+  IFS=,
+  getopt -o + -l "${!opt_spec[*]}" -- "$@"
+) || exit
+while [ "$#" -gt 0 ]; do
+  o=$1; shift
+  case $o in
+    (--) break;;
+    (--*)
+      o=${o#--}
+      if ((${opt_spec[$o]+1})); then # opt without argument
+        eval "${opt_spec[$o]}=true"
+      else
+        o=$o:
+        case "${opt_spec[$o]}" in
+          (*'()') eval "${opt_spec[$o]%??}+=(\"\$1\")";;
+          (*) eval "${opt_spec[$o]}=\$1"
+        esac
+        shift
+      fi
+  esac
+done
+####################### updating variables with input arguments #############################
+INSTANCE_NUMBER=${instance:-"01"}
+VERSION_NUMBER=${version:-"0.0.0-0.0.0"}
+NATIVE_LIBRARY_PATH=${native:-"/opt/oracle/DocumentDataExtractor/"}
+NAME=${name:-"Apollo_$INSTANCE_NUMBER"}
+FILE_PATH=${path:-"/opt/oracle/apollo_$INSTANCE_NUMBER"}
+APP_USER=${user:-"idapi"}
 
 
-####################### set the values #############################
-
-INSTANCE_NUMBER="01"
-VERSION_NUMBER="1.0.1-0.0.2--"
-JAVA_HOME="/usr/local/java/jdk1.8.0_111/"
-NATIVE_LIBRARY_PATH="/opt/oracle/DocumentDataExtractor/"
-
-
-######################## do not change below #######################
-NAME="Apollo_$INSTANCE_NUMBER" DESC="Apollo image processing agent instance $INSTANCE_NUMBER"
-
+JAVA_HOME=echo printenv JAVA_HOME
+DESC="Apollo image processing agent instance $INSTANCE_NUMBER"
 EXEC="/usr/bin/jsvc"
-
-FILE_PATH="/opt/oracle/apollo_$INSTANCE_NUMBER"
-
 CLASSPATH="/$FILE_PATH/ApolloAgent-$VERSION_NUMBER.jar:/$FILE_PATH/lib/commons-daemon-1.0.15.jar:/$FILE_PATH/lib/*:/$FILE_PATH/config/*:."
-
-
 CLASS="com.fintech.oracle.apollo.service.Service"
-
-USER="idapi"
-
-PID="/$FILE_PATH/$NAME.pid"
-
+PID="$FILE_PATH/$NAME.pid"
 DATE=$(date +"_%Y%m%d")
-
 # System.out writes to this file...
-LOG_OUT="/$FILE_PATH/$NAME$DATE.out"
-
+LOG_OUT="$FILE_PATH/$NAME$DATE.out"
 # System.err writes to this file...
-LOG_ERR="/$FILE_PATH/$NAME$DATE.err"
+LOG_ERR="$FILE_PATH/$NAME$DATE.err"
 
+echo "NAME : $NAME"
 
 jsvc_exec() {
     cd /$FILE_PATH
-    $EXEC -home $JAVA_HOME -cp $CLASSPATH -DapplicationContextLoadFrom="file" -DcontextFilePath="$FILE_PATH/config/" -DcontextFileName="production-application-context.xml" -user $USER -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
+    $EXEC -home $JAVA_HOME -cp $CLASSPATH -DapplicationContextLoadFrom="file" -DcontextFilePath="$FILE_PATH/config/" -DcontextFileName="production-application-context.xml" -user $APP_USER -outfile $LOG_OUT -errfile $LOG_ERR -pidfile $PID $1 $CLASS
 }
 
 case "$1" in
@@ -59,7 +82,7 @@ case "$1" in
         else
             echo "Unable to stabilize orbit"
             echo "Initiating self destruct sequence"
-            ecoo "You may find more details about this unsuccessful launch in $LOG_ERR file"
+            echo "You may find more details about this unsuccessful launch in $LOG_ERR file"
         fi
 
     ;;
@@ -78,6 +101,7 @@ case "$1" in
         echo "Not supported at the moment"
     ;;
     *)
-        echo "Usage: {start|stop}"
+        echo "Usage: [--instance Instance] [--version Agent Version] [--native Native Library Path]
+        [--user User] [--path File Path] {start|stop}"
     ;;
 esac
