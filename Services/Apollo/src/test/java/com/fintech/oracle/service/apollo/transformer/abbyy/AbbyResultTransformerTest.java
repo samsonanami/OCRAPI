@@ -19,7 +19,7 @@ public class AbbyResultTransformerTest {
 
     @Test
     public void should_Translate() throws Exception {
-        File file = new File("/media/sasitha/Projects/Orion/Code/OCRAPI/Services/Apollo/src/test/java/com/fintech/oracle/service/apollo/transformer/abbyy/results.xml");
+        File file = new File("/media/sasitha/Projects/IDAPI/OCRAPI/Services/Apollo/src/test/java/com/fintech/oracle/service/apollo/transformer/abbyy/results.xml");
 
         JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

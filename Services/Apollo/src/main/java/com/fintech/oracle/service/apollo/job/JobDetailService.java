@@ -1,7 +1,9 @@
 package com.fintech.oracle.service.apollo.job;
 
-import com.fintech.oracle.dataabstraction.entities.*;
-import com.fintech.oracle.dataabstraction.entities.Process;
+import com.fintech.oracle.dataabstraction.entities.OcrProcess;
+import com.fintech.oracle.dataabstraction.entities.OcrProcessingStatus;
+import com.fintech.oracle.dataabstraction.entities.OcrResult;
+import com.fintech.oracle.dataabstraction.entities.Resource;
 import com.fintech.oracle.dataabstraction.repository.OcrProcessRepository;
 import com.fintech.oracle.dataabstraction.repository.OcrProcessingStatusRepository;
 import com.fintech.oracle.dataabstraction.repository.OcrResultRepository;

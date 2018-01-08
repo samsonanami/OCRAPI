@@ -75,8 +75,10 @@ public class AbbyyConnectorImpl implements AbbyyConnector {
             byte[] configurationFileData = readConfigurationFileData(configurationFilePath);
             String processingResults = submitTaskForProcessing(requestBuilder, task, configurationFileData);
             task = waitForTaskCompletion(requestBuilder, processingResults);
-            if(task.getTaskStatus().equals(TaskStatus.Completed)){
+            if(task.getTaskId() !=null && task.getTaskStatus().equals(TaskStatus.Completed)){
                 getResultsFromCompletedTask(requestBuilder, task);
+            }else if(task.getTaskId() == null){
+                LOGGER.error("Insufficient credit in abby account {}", connectorConfigurations.get("appId"));
             }
         } catch (FailedRequestException e) {
             throw new AbbyyConnectorException("Failed to send the request ", e);

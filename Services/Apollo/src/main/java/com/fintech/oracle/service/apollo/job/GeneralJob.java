@@ -112,6 +112,8 @@ public class GeneralJob {
                         getSourceImage(jobMessage));
                 saveProcessedImages(jobMessage, resultImage);
                 List<OcrResult> ocrResultList = new ArrayList<>();
+                LOGGER.warn("Received results from native library {} ", resultImage.getData());
+                LOGGER.warn("Received error from native library {} ", resultImage.getError());
                 if (resultImage.getError().isEmpty()){
                     ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getOutput()));
                     String templateName = getTemplateName(ocrResultList, "TemplateName");
@@ -120,8 +122,12 @@ public class GeneralJob {
                                     resultImage, templateName));
                     jobDetailService.saveOcrResults(ocrResultList);
                 }else {
-                    List<OcrResult> errorResults = processWithLocalOcr(process, resourceName, resultImage.getError());
-                    jobDetailService.saveOcrResults(errorResults);
+                    ResultExtractor<Document> abbyOcrResultExtractor =
+                            resultExtractorFactory.getResultExtractor(ConnectorType.ABBYY);
+                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getError()));
+                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "NPP"));
+                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "PP"));
+                    jobDetailService.saveOcrResults(ocrResultList);
                     LOGGER.warn("Received error from native library '{}' when processing image belongs to " +
                             "image category {} in ocr process with id {}",resultImage.getError(), resourceName.getName(), process.getId());
                     jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
@@ -209,6 +215,8 @@ public class GeneralJob {
             }
             if (abbyyResultsForPreProcessedImage.get().getResultString() == null &&
                     abbyResultForNonPreProcessedImage.get().getResultString() == null ){
+                ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "NPP"));
+                ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "PP"));
                 jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
             }else {
                 jobDetailService.updateOcrProcessStatus(process, PROCESSING_SUCCESS_STATUS);

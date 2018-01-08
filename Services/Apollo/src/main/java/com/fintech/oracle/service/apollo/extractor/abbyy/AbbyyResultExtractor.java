@@ -39,7 +39,7 @@ public class AbbyyResultExtractor implements ResultExtractor<Document> {
         List<OcrResult> ocrResultList = new ArrayList<>();
         for (ResourceNameOcrExtractionField extractionField : filterOcrExtractionFieldSet(resourceNameOcrExtractionFieldList)){
             String ocrExtractionField = extractionField.getOcrExtractionField().getField();
-            String extractedValue = getExtractedFieldValue(document.getPage(), ocrExtractionField);
+            String extractedValue = getExtractedFieldValue(document, ocrExtractionField);
             ocrResultList.add(getOcrResultObject(ocrProcess, extractedValue,
                     resourceName, ocrExtractionField, extractionField, preProcessedStatus));
         }
@@ -59,11 +59,14 @@ public class AbbyyResultExtractor implements ResultExtractor<Document> {
         return ocrResult;
     }
 
-    private String getExtractedFieldValue(Page page, String ocrExtractionField) {
+    private String getExtractedFieldValue(Document document, String ocrExtractionField) {
         String value = "";
-        for (Text text : page.getText()){
-            if (text.getId().equals(ocrExtractionField)){
-                value = text.getValue();
+        if(document != null){
+            Page page = document.getPage();
+            for (Text text : page.getText()){
+                if (text.getId().equals(ocrExtractionField)){
+                    value = text.getValue();
+                }
             }
         }
         return value;
