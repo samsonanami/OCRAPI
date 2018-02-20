@@ -285,17 +285,18 @@ public class GeneralJob {
             String dataFromJson = "";
             try{
                 dataFromJson  = json.getString(ocrExtractionField);
+                ocrResult.setOcrProcess(ocrProcess);
+                ocrResult.setResourceNameOcrExtractionField(extractionField);
+                ocrResult.setValue(dataFromJson);
+                ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
+
+                LOGGER.debug("saving results {}", ocrResult);
+                ocrResultList.add(ocrResult);
             }catch (JSONException e){
                 LOGGER.warn("No data in the json file found for the extraction field {} in ocr process {} " +
-                        "and will be replaced by an empty string ", extractionField, ocrProcess, e);
+                        " this field will be omitted from the result list", extractionField, ocrProcess, e);
             }
-            ocrResult.setOcrProcess(ocrProcess);
-            ocrResult.setResourceNameOcrExtractionField(extractionField);
-            ocrResult.setValue(dataFromJson);
-            ocrResult.setResultName(resourceName.getName() + "##" +ocrExtractionField);
 
-            LOGGER.debug("saving results {}", ocrResult);
-            ocrResultList.add(ocrResult);
 
         }
         jobDetailService.saveOcrResults(ocrResultList);
