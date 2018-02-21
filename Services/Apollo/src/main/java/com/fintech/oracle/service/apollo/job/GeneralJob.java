@@ -60,6 +60,8 @@ public class GeneralJob {
     @Autowired
     private ResourceNameRepository resourceNameRepository;
 
+
+
     @Autowired
     private ResourceNameOcrExtractionFieldRepository resourceNameOcrExtractionFieldRepository;
 
@@ -69,11 +71,20 @@ public class GeneralJob {
     @Autowired
     private ResultTransformerFactory resultTransformerFactory;
 
+
+
     @Autowired
     private ResultExtractorFactory resultExtractorFactory;
 
     @Autowired
     private LocalResultExtractor localResultExtractor;
+
+    @Autowired
+    private Boolean skipTemplateRecognition;
+
+
+
+
 
     @javax.annotation.Resource(name = "abbyyCloudAPIConfigurations")
     private Map<String,String>  abbyyCloudAPIConfigurations;
@@ -108,42 +119,14 @@ public class GeneralJob {
                 saveJsonDetails(jsonObj,  process, resourceName);
                 jobDetailService.updateOcrProcessStatus(process, PROCESSING_SUCCESS_STATUS);
             }else {
-                ZvImage resultImage = jniImageProcessor.processImage(resourceConfigurationName,
-                        getSourceImage(jobMessage));
-                saveProcessedImages(jobMessage, resultImage);
-                List<OcrResult> ocrResultList = new ArrayList<>();
-                LOGGER.warn("Received results from native library {} ", resultImage.getData());
-                LOGGER.warn("Received error from native library {} ", resultImage.getError());
-                if (resultImage.getError().isEmpty()){
-                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getOutput()));
-                    String templateName = getTemplateName(ocrResultList, "TemplateName");
-                    ocrResultList.addAll(
-                            processImagesWithAbby(jobMessage, process, resourceName,
-                                    resultImage, templateName));
-                    jobDetailService.saveOcrResults(ocrResultList);
-                }else {
-                    ResultExtractor<Document> abbyOcrResultExtractor =
-                            resultExtractorFactory.getResultExtractor(ConnectorType.ABBYY);
-                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getError()));
-                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "NPP"));
-                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "PP"));
-                    jobDetailService.saveOcrResults(ocrResultList);
-                    LOGGER.warn("Received error from native library '{}' when processing image belongs to " +
-                            "image category {} in ocr process with id {}",resultImage.getError(), resourceName.getName(), process.getId());
-                    jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
-                }
+
+                processImage(jobMessage,process,resource,resourceConfigurationName,resourceName);
+
             }
         }catch (ConfigurationDataNotFoundException  e){
             jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
             throw new JobException("Could not find required configuration data for resource with id : " +
                     "" + jobMessage.getResourceId() + " and resource name : " + resource.getResourceName(), e);
-        } catch (ConnectorException e) {
-            jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
-            throw new JobException("Error occurred while processing documents using ABBYY API. ocr process id : " +
-            jobMessage.getOcrProcessId() + " resource id : " + jobMessage.getResourceId());
-        } catch (IOException e) {
-            jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
-            throw new JobException("Unable to get image data ", e);
         }
     }
 
@@ -158,6 +141,54 @@ public class GeneralJob {
 
         return templateNameOcrResult.getValue();
     }
+
+    private void processImage(ProcessingJobMessage jobMessage, OcrProcess process, Resource resource, String resourceConfigurationName
+                        , ResourceName resourceName) throws JobException{
+
+        try {
+            ZvImage resultImage = jniImageProcessor.processImage(resourceConfigurationName,
+                    getSourceImage(jobMessage));
+            saveProcessedImages(jobMessage, resultImage);
+            List<OcrResult> ocrResultList = new ArrayList<>();
+            LOGGER.warn("Received results from native library {} ", resultImage.getData());
+            LOGGER.warn("Received error from native library {} ", resultImage.getError());
+
+            //if aBoolean = false code run as normal
+            //else if aBoolean = true if will not run and only else will run
+
+                if (resultImage.getError().isEmpty() && !skipTemplateRecognition){
+                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getOutput()));
+                    String templateName = getTemplateName(ocrResultList, "TemplateName");
+                    ocrResultList.addAll(
+                            processImagesWithAbby(jobMessage, process, resourceName,
+                                    resultImage, templateName));
+                    jobDetailService.saveOcrResults(ocrResultList);
+                }else{
+                    ResultExtractor<Document> abbyOcrResultExtractor =
+                            resultExtractorFactory.getResultExtractor(ConnectorType.ABBYY);
+                    if(skipTemplateRecognition){
+                        resultImage.setError("Processing Failure##Invalid Template.Please contact the service provider##0%%");
+                    }
+                    ocrResultList.addAll(processWithLocalOcr(process, resourceName, resultImage.getError()));
+                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "NPP"));
+                    ocrResultList.addAll(abbyOcrResultExtractor.extractOcrResultSet(null, process, resourceName, "PP"));
+                    jobDetailService.saveOcrResults(ocrResultList);
+                    LOGGER.warn("Received error from native library '{}' when processing image belongs to " +
+                            "image category {} in ocr process with id {}",resultImage.getError(), resourceName.getName(), process.getId());
+                    jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
+                }
+
+        }catch (ConnectorException e) {
+            jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
+            throw new JobException("Error occurred while processing documents using ABBYY API. ocr process id : " +
+                    jobMessage.getOcrProcessId() + " resource id : " + jobMessage.getResourceId());
+        } catch (IOException e) {
+            jobDetailService.updateOcrProcessStatus(process, PROCESSING_FAILED_STATUS);
+            throw new JobException("Unable to get image data ", e);
+        }
+
+    }
+
 
     private List<OcrResult> processWithLocalOcr(OcrProcess process, ResourceName resourceName,
                                      String resultString){

@@ -78,6 +78,12 @@
         <property name="roiNameListToExtractResults" ref="roiNameListToExtractResults"/>
     </bean>
 
+
+
+        <bean id="skipTemplateRecognition" class="java.lang.Boolean">
+            <constructor-arg value="false"/>
+        </bean>
+
     <bean id="resultExtractorFactory" class="com.fintech.oracle.service.apollo.extractor.factory.ResultExtractorFactory"/>
 
 
