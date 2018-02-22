@@ -3,6 +3,11 @@ Oracle - Changelog
 
 Unreleased
 ----------
+(2018-02-21 18:27:27 +0530	) Redirect both template match and not match to manual flow
+ Assign a boolean to true(skipTemplateRecognition) in modified:   ApolloAgent/src/main/resources/abbyy-connector-configuration.xml
+Add a new method to process image (processImage) in Services/Apollo/src/main/java/com/fintech/oracle/service/apollo/job/GeneralJob.java
+
+ (akashj)(akashj@zone24x7.com)
 (2018-02-20 09:47:49 +0530	) ignoring fields not included in the key data file
  
  (Sasitha Gunadasa)(sasithag@zone24x7.com)
