@@ -6,9 +6,24 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
 
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
     <bean id="processingRequestService" class="com.fintech.oracle.service.api.request.ProcessingRequestService"/>
 
-    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <bean id="pendingProcessingMessage" class="java.lang.String">
+        <constructor-arg value="pending processing" type="java.lang.String"/>
+    </bean>
+    <bean id="processingPendingStatus" class="java.lang.String">
+        <constructor-arg value="pending" type="java.lang.String"/>
+    </bean>
+    <bean id="processingFailureOcrExtractionFieldName" class="java.lang.String">
+        <constructor-arg value="processing_failure" type="java.lang.String"/>
+    </bean>
+
+    <util:list id="preProcessingStatus" value-type="java.lang.String">
+        <value>NPP</value>
+        <value>PP</value>
+    </util:list>
+
 
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:jboss/datasources/orion"/>
