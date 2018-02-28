@@ -65,6 +65,21 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
     @Autowired
     private String resourceFileBasePath;
 
+    @Autowired
+    private ResourceNameOcrExtractionFieldRepository resourceNameOcrExtractionFieldRepository;
+
+    @Autowired
+    private String pendingProcessingMessage;
+
+    @Autowired
+    private String processingPendingStatus;
+
+    @Autowired
+    private String processingFailureOcrExtractionFieldName;
+
+    @javax.annotation.Resource
+    private List<String> preProcessingStatus;
+
     @Transactional
     @Override
     public VerificationProcessResponse saveProcessingRequest(VerificationRequest verificationRequest) throws DataNotFoundException {
@@ -92,15 +107,73 @@ public class ProcessingRequestService implements ProcessingRequestServiceInterfa
         return response;
     }
 
+
     @Override
     @Transactional
     public OcrResponse getProcessingResult(String code) throws DataNotFoundException {
         List<OcrProcessingRequest> processingRequestList = ocrProcessingRequestRepository.findOcrProcessingRequestsByProcessingRequestCode(code);
-        if(processingRequestList.isEmpty()){
+        if (processingRequestList.isEmpty()) {
             throw new DataNotFoundException("No processing request found with the processing request identification code : " + code);
         }
 
-        return getOcrResponseObject(processingRequestList.get(0));
+        OcrResponse ocrResponse = new OcrResponse();
+        if (getGeneralProcessingStatus(processingRequestList.get(0)).equalsIgnoreCase(this.processingPendingStatus)) {
+            OcrProcess ocrProcess;
+            ResourceName resourceName;
+            List<OcrResult> ocrResultList = new ArrayList<>();
+            for (OcrProcessingRequest list : processingRequestList) {
+                for (OcrProcess process : list.getOcrProcesses()) {
+                    ocrProcess = process;
+                    for (com.fintech.oracle.dataabstraction.entities.Resource resource : process.getResources()) {
+                        resourceName = resource.getResourceName();
+                        List<ResourceNameOcrExtractionField> resourceNameOcrExtractionFieldList =
+                                resourceNameOcrExtractionFieldRepository.findResourceNameOcrExtractionFieldsByResourceName(resourceName);
+
+                        setValuesToExtractedFields(resourceNameOcrExtractionFieldList,ocrResultList,ocrProcess,resourceName);
+
+                    }
+
+                }
+
+            }
+            ocrResponse.setData(getOcrFieldDataList(ocrResultList));
+            return ocrResponse;
+        } else {
+            return getOcrResponseObject(processingRequestList.get(0));
+        }
+
+
+    }
+
+    private void setValuesToExtractedFields(List<ResourceNameOcrExtractionField> resourceNameOcrExtractionFieldList, List<OcrResult> ocrResultList,
+                                            OcrProcess ocrProcess, ResourceName resourceName){
+
+        for (ResourceNameOcrExtractionField extractionField : resourceNameOcrExtractionFieldList) {
+            String ocrExtractionField = extractionField.getOcrExtractionField().getField();
+            String extractedValue = "";
+            if (ocrExtractionField.equalsIgnoreCase(this.processingFailureOcrExtractionFieldName)) {
+                extractedValue = this.pendingProcessingMessage;
+            } else {
+                extractedValue = "";
+            }
+            for (String preProcessStatus: this.preProcessingStatus){
+                ocrResultList.add(getOcrResultObject(ocrProcess, extractedValue,
+                        resourceName, ocrExtractionField, extractionField, preProcessStatus));
+            }
+
+        }
+    }
+
+    private OcrResult getOcrResultObject(OcrProcess ocrProcess, String extractedValue,
+                                         ResourceName resourceName, String ocrExtractionField,
+                                         ResourceNameOcrExtractionField extractionField, String preProcessedStatus) {
+        OcrResult ocrResult = new OcrResult();
+        ocrResult.setOcrProcess(ocrProcess);
+        ocrResult.setOcrConfidence(0.0);
+        ocrResult.setValue(extractedValue);
+        ocrResult.setResourceNameOcrExtractionField(extractionField);
+        ocrResult.setResultName(resourceName.getName() + "##" + ocrExtractionField + "##" + preProcessedStatus);
+        return ocrResult;
     }
 
 

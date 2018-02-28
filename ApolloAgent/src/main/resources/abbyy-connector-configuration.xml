@@ -81,7 +81,7 @@
 
 
         <bean id="skipTemplateRecognition" class="java.lang.Boolean">
-            <constructor-arg value="false"/>
+            <constructor-arg value="true"/>
         </bean>
 
     <bean id="resultExtractorFactory" class="com.fintech.oracle.service.apollo.extractor.factory.ResultExtractorFactory"/>
